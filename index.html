@@ -3,127 +3,319 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Gamers Paradise Loyalty Program - Check-in and earn rewards!" />
+  <meta name="description" content="Gamers Paradise Loyalty - Earn rewards with every visit!" />
   <meta name="theme-color" content="#07070c" />
-  <title>Gamers Paradise - Loyalty Check-In</title>
+  <title>Gamers Paradise — Loyalty Rewards</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     :root{
-      --bg:#07070c;--surface:#0f0f1a;--card:#0f1320;--accent:#7b2cbf;--accent-2:#9d4edd;
-      --text:#f8fafc;--muted:#94a3b8;--radius:14px;--glass:rgba(255,255,255,0.04)
+      --bg:#07070c;--surface:#0f0f1a;--card:#1a1f2e;--accent:#7b2cbf;--accent-2:#9d4edd;
+      --text:#f8fafc;--muted:#94a3b8;--radius:14px;--success:#00e676;--warn:#ffd600
     }
     *{box-sizing:border-box;margin:0;padding:0}
-    body{font-family:Inter,system-ui,Arial;background:radial-gradient(1200px 600px at 10% 10%,rgba(123,44,191,0.12),transparent),linear-gradient(180deg,#05050a,#07070c);color:var(--text);min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:36px 16px 48px}
-    .page-shell{width:100%;max-width:980px}
-    .container{width:100%;display:grid;grid-template-columns:1fr;gap:20px}
-    .card{background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,0.03);padding:20px;border-radius:var(--radius)}
-    .site-header{display:flex;flex-direction:column;align-items:flex-start;gap:16px;padding:22px 24px;background:linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02));border:1px solid rgba(255,255,255,0.08);border-radius:var(--radius);margin-bottom:24px}
-    .header-top{display:flex;align-items:center;gap:14px;width:100%}
-    .dashboard-header{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:14px}
-    .dashboard-header h3{margin:6px 0 0;font-size:22px}
-    .status-pill{display:inline-flex;padding:6px 12px;border-radius:999px;background:rgba(123,44,191,0.18);color:#fff;font-size:11px;letter-spacing:0.08em;text-transform:uppercase}
-    .hero-subtitle{max-width:760px;color:var(--muted);font-size:14px;line-height:1.75;margin:0}
-    .logo{width:56px;height:56px;border-radius:10px;overflow:hidden;flex:0 0 56px;box-shadow:0 6px 18px rgba(0,0,0,0.6)}
-    .logo img{width:100%;height:100%;object-fit:cover;display:block}
-    .brand{line-height:1}
-    .brand h1{font-family:Orbitron,system-ui;font-size:24px;margin:0;letter-spacing:1px}
-    .brand p{margin:4px 0 0;color:var(--muted);font-size:13px;letter-spacing:1.2px;text-transform:uppercase}
-    input[type=tel]{width:100%;padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,0.05);background:var(--surface);color:var(--text);font-size:15px}
-    .stamp-btn{width:100%;padding:12px;margin-top:12px;border-radius:10px;border:none;background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#fff;font-weight:800;cursor:pointer;box-shadow:0 10px 30px rgba(123,44,191,0.14);transition:transform .18s ease,box-shadow .18s ease}
-    .stamp-btn:hover{transform:translateY(-3px);box-shadow:0 18px 40px rgba(123,44,191,0.2)}
-    #dashScreen{display:none;margin-top:12px}
-    .milestone-card{background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);padding:12px;border-radius:12px;margin-bottom:12px;display:flex;align-items:center;gap:12px;transition:transform .18s ease,box-shadow .18s ease}
-    .milestone-card:hover{transform:translateY(-6px);box-shadow:0 12px 30px rgba(0,0,0,0.6)}
-    .reward-img{width:64px;height:64px;border-radius:12px;background:linear-gradient(180deg,#101218,#0b0b12);display:flex;align-items:center;justify-content:center;font-size:28px}
-    .m-info{flex:1}
-    .m-info strong{display:block;font-size:16px}
-    .m-info small{color:var(--muted)}
-    .m-status{min-width:120px;text-align:right}
-    .error-msg{color:#ff6b6b;margin-top:10px;display:none}
-    .loading-spinner{display:none;position:fixed;inset:0;align-items:center;justify-content:center;background:rgba(0,0,0,.45);z-index:999}
-    .spinner{width:44px;height:44px;border-radius:50%;border:4px solid rgba(255,255,255,0.06);border-top-color:#e0f700;animation:spin 1s linear infinite}
+    html,body{width:100%;height:100%}
+    body{font-family:Inter,system-ui,Arial;background:radial-gradient(1200px 600px at 10% 10%,rgba(123,44,191,0.12),transparent),linear-gradient(180deg,#05050a,#07070c);color:var(--text);overflow-x:hidden}
+    .page-shell{width:100%;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:24px 16px 48px}
+    .header-bar{width:100%;max-width:980px;display:flex;align-items:center;gap:14px;margin-bottom:28px}
+    .logo-sm{width:40px;height:40px;border-radius:8px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,0.5)}
+    .logo-sm img{width:100%;height:100%;object-fit:cover}
+    .brand-sm h2{font-size:18px;margin:0;font-weight:800}
+    .brand-sm p{font-size:11px;color:var(--muted);margin:2px 0 0;letter-spacing:0.08em;text-transform:uppercase}
+    
+    .screen{display:none;width:100%;max-width:560px;animation:fadeIn 0.4s ease}
+    .screen.active{display:block}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+    
+    .card{background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,0.06);padding:28px;border-radius:var(--radius)}
+    
+    /* Landing screen */
+    .landing-hero{text-align:center;margin-bottom:32px}
+    .landing-hero h1{font-family:Orbitron,system-ui;font-size:32px;margin-bottom:12px;letter-spacing:1px}
+    .landing-hero p{color:var(--muted);font-size:15px;line-height:1.8;margin:0}
+    .rewards-showcase{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:32px 0}
+    .reward-tile{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);padding:16px;border-radius:10px;text-align:center;transition:transform 0.2s,box-shadow 0.2s}
+    .reward-tile:hover{transform:translateY(-6px);box-shadow:0 12px 30px rgba(123,44,191,0.2)}
+    .reward-tile .icon{font-size:32px;margin-bottom:8px}
+    .reward-tile .visits{font-size:13px;color:var(--warn);font-weight:700;letter-spacing:0.08em}
+    .reward-tile .name{font-size:12px;color:var(--muted);margin-top:6px}
+    .how-it-works{background:rgba(255,255,255,0.02);border-left:3px solid var(--accent);padding:16px;margin:24px 0;border-radius:6px}
+    .how-it-works li{color:var(--muted);font-size:13px;margin:8px 0;margin-left:18px}
+    
+    .primary-btn{width:100%;padding:14px;border-radius:10px;border:none;background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#fff;font-weight:800;font-size:15px;cursor:pointer;box-shadow:0 10px 30px rgba(123,44,191,0.18);transition:transform 0.15s,box-shadow 0.15s}
+    .primary-btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 16px 40px rgba(123,44,191,0.25)}
+    .primary-btn:disabled{opacity:0.6;cursor:not-allowed}
+    .secondary-btn{background:transparent;border:1px solid rgba(255,255,255,0.1);color:var(--text);padding:10px 16px;border-radius:8px;font-size:13px;cursor:pointer;transition:border-color 0.2s}
+    .secondary-btn:hover{border-color:rgba(255,255,255,0.3)}
+    
+    input[type=tel]{width:100%;padding:14px;border-radius:10px;border:1px solid rgba(255,255,255,0.08);background:var(--surface);color:var(--text);font-size:15px}
+    input[type=tel]:focus{outline:none;border-color:var(--accent)}
+    
+    .alert{padding:12px 16px;border-radius:10px;font-size:13px;margin:12px 0;display:none}
+    .alert.show{display:block}
+    .alert-error{background:rgba(255,107,107,0.12);border:1px solid rgba(255,107,107,0.3);color:#ff6b6b}
+    .alert-success{background:rgba(0,230,118,0.12);border:1px solid rgba(0,230,118,0.3);color:var(--success)}
+    .alert-warn{background:rgba(255,214,0,0.12);border:1px solid rgba(255,214,0,0.3);color:var(--warn)}
+    
+    /* Check-in screen */
+    .location-request{margin:16px 0;padding:16px;background:rgba(123,44,191,0.08);border:1px solid rgba(123,44,191,0.2);border-radius:10px}
+    .location-request p{color:var(--muted);font-size:13px;margin:0 0 12px}
+    .location-btn{width:100%;padding:10px;margin:6px 0;background:rgba(123,44,191,0.2);border:1px solid var(--accent);color:var(--accent);border-radius:8px;cursor:pointer;font-size:13px;transition:background 0.2s}
+    .location-btn:hover{background:rgba(123,44,191,0.3)}
+    
+    /* Success screen */
+    .success-container{text-align:center}
+    .success-icon{font-size:64px;margin-bottom:16px;animation:bounce 0.6s ease}
+    @keyframes bounce{0%{transform:scale(0.8)}50%{transform:scale(1.1)}100%{transform:scale(1)}}
+    .success-title{font-size:24px;font-weight:800;margin-bottom:8px}
+    .success-subtitle{color:var(--muted);margin-bottom:24px}
+    .reward-unlocked{background:rgba(255,214,0,0.12);border:2px solid var(--warn);padding:14px;border-radius:10px;margin:20px 0;display:none}
+    .reward-unlocked.show{display:block;animation:slideUp 0.4s ease}
+    @keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+    .reward-unlocked strong{color:var(--warn)}
+    
+    .progress-section{background:rgba(255,255,255,0.02);padding:16px;border-radius:10px;margin:16px 0;text-align:left}
+    .progress-section label{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:8px;text-transform:uppercase}
+    .progress-track{height:8px;background:rgba(255,255,255,0.05);border-radius:6px;overflow:hidden}
+    .progress-fill{height:100%;background:linear-gradient(90deg,#ffd86f,#ff6bcb);width:0;transition:width 0.8s ease}
+    
+    .next-reward-callout{background:linear-gradient(180deg,rgba(157,78,221,0.1),transparent);border:1px solid rgba(157,78,221,0.3);padding:14px;border-radius:10px;margin:16px 0}
+    .next-reward-callout strong{color:var(--accent-2);display:block;margin-bottom:4px}
+    .next-reward-callout small{color:var(--muted);font-size:13px}
+    
+    /* Dashboard screen */
+    .user-profile{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid rgba(255,255,255,0.05)}
+    .user-info h3{font-size:18px;margin:0 0 4px}
+    .user-info small{color:var(--muted);font-size:12px}
+    .visit-counter{text-align:right}
+    .visit-counter .num{font-size:28px;font-weight:900;color:var(--accent)}
+    .visit-counter small{color:var(--muted);font-size:12px}
+    
+    .history-section{margin-top:24px}
+    .history-section h4{font-size:12px;color:var(--muted);text-transform:uppercase;margin-bottom:12px}
+    .visit-log{display:grid;gap:8px;max-height:200px;overflow-y:auto}
+    .visit-item{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:rgba(255,255,255,0.02);border-radius:8px;font-size:13px}
+    .visit-item .date{color:var(--muted)}
+    .visit-item .badge{background:rgba(0,230,118,0.2);color:var(--success);padding:2px 8px;border-radius:4px;font-size:11px}
+    
+    .milestone-grid{display:grid;gap:10px;margin:16px 0}
+    .milestone-item{background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);padding:12px;border-radius:10px;display:flex;align-items:center;gap:12px;border:1px solid rgba(255,255,255,0.05)}
+    .milestone-item.unlocked{border-color:var(--warn);background:rgba(255,214,0,0.06)}
+    .milestone-item.claimed{border-color:var(--success);background:rgba(0,230,118,0.06)}
+    .milestone-icon{font-size:28px;min-width:40px}
+    .milestone-details{flex:1}
+    .milestone-details strong{display:block;font-size:14px}
+    .milestone-details small{color:var(--muted);font-size:12px}
+    .milestone-status{text-align:right;font-size:12px}
+    .milestone-status.locked{color:var(--muted)}
+    .milestone-status.unlocked{color:var(--warn);font-weight:700}
+    .milestone-status.claimed{color:var(--success);font-weight:700}
+    .claim-btn{background:var(--warn);color:#000;padding:6px 12px;border-radius:6px;border:none;font-weight:700;font-size:11px;cursor:pointer;transition:opacity 0.2s}
+    .claim-btn:hover{opacity:0.9}
+    
+    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);z-index:1000;align-items:center;justify-content:center}
+    .modal-overlay.show{display:flex}
+    .modal{background:var(--card);border:1px solid rgba(255,255,255,0.1);border-radius:var(--radius);padding:24px;max-width:480px;max-height:80vh;overflow-y:auto}
+    .modal h3{margin-bottom:16px}
+    .modal-close{float:right;background:none;border:none;color:var(--muted);cursor:pointer;font-size:20px}
+    
+    .loading-spinner{display:none;position:fixed;inset:0;align-items:center;justify-content:center;background:rgba(0,0,0,0.5);z-index:1100}
+    .loading-spinner.show{display:flex}
+    .spinner{width:40px;height:40px;border-radius:50%;border:3px solid rgba(255,255,255,0.1);border-top-color:var(--accent);animation:spin 1s linear infinite}
     @keyframes spin{to{transform:rotate(360deg)}}
-    /* progress */
-    .progress-track{background:rgba(255,255,255,0.03);height:12px;border-radius:8px;overflow:hidden}
-    .progress-fill{height:100%;width:0;background:linear-gradient(90deg,#ffd86f,#ff6bcb);transition:width 900ms ease}
-    /* confetti */
-    .confetti-piece{position:fixed;pointer-events:none;z-index:1500;will-change:transform,opacity}
-    /* Responsive / Adaptive */
-    @media (max-width: 920px) {
-      .container{max-width:820px;grid-template-columns:320px 1fr}
-      .card{padding:18px}
-    }
-    @media (max-width: 720px) {
-      body{padding:18px}
-      .container{grid-template-columns:1fr;max-width:520px;gap:14px}
-      .site-header{align-items:center}
-      .logo{width:60px;height:60px}
-      .brand h1{font-size:18px}
-      .card{padding:16px}
-      input[type=tel]{font-size:16px;padding:14px}
-      .stamp-btn{padding:14px;font-size:15px;border-radius:10px}
-      .milestone-card{flex-direction:row;gap:10px;padding:10px}
-      .reward-img{width:52px;height:52px;font-size:22px}
-      .m-info strong{font-size:15px}
-      .m-status{min-width:90px}
-      .progress-track{height:10px}
-    }
-    @media (max-width: 420px) {
-      .logo{width:40px;height:40px}
-      .brand h1{font-size:16px}
-      .brand p{font-size:11px}
-      .milestone-card{flex-direction:row;gap:8px}
-      .reward-img{width:48px;height:48px;font-size:20px}
-      .m-info small{font-size:12px}
-      .stamp-btn{font-size:15px;padding:12px}
+    
+    .confetti{position:fixed;pointer-events:none;z-index:1500}
+    
+    @media(max-width:640px){
+      .page-shell{padding:16px}
+      .card{padding:20px}
+      .landing-hero h1{font-size:24px}
+      .rewards-showcase{gap:10px}
+      .reward-tile{padding:12px}
+      .reward-tile .icon{font-size:24px}
+      .milestone-grid{gap:8px}
+      .milestone-item{padding:10px;gap:10px}
     }
   </style>
 </head>
 <body>
   <div class="page-shell">
-    <div class="site-header">
-      <div class="header-top">
-        <div class="logo"><img src="logo.png" alt="Gamers Paradise logo"></div>
-        <div class="brand"><h1>Gamers Paradise</h1><p>Loyalty Check-In</p></div>
+    <!-- Header -->
+    <div class="header-bar">
+      <div class="logo-sm"><img src='logo.png' viewBox='0 0 100 100'%3E%3Crect fill='%237b2cbf' width='100' height='100'/%3E%3Ctext x='50' y='60' font-size='50' fill='white' text-anchor='middle' font-weight='bold'%3EGP%3C/text%3E%3C/svg%3E" alt="GP"></div>
+      <div class="brand-sm">
+        <h2>Gamers Paradise</h2>
+        <p>Loyalty Program</p>
       </div>
-      <p class="hero-subtitle">Welcome to the loyalty tracker for Gamers Paradise. Stamp visits, unlock rewards, and check your progress in a sleek mobile-ready dashboard.</p>
+      <div style="margin-left:auto">
+        <button class="secondary-btn" id="termsBtn">Terms</button>
+      </div>
     </div>
-    <div class="container">
-      <div id="loginScreen" class="card">
-        <h2 style="margin-bottom:12px">Check-in</h2>
-        <p style="color:var(--muted);font-size:13px">Enter your mobile number to record today's visit.</p>
-        <div style="margin-top:12px">
-          <input id="phoneInput" type="tel" placeholder="10-digit mobile number" maxlength="10">
+
+    <!-- LANDING SCREEN -->
+    <div id="landingScreen" class="screen active card">
+      <div class="landing-hero">
+        <h1>Level Up Your Visits</h1>
+        <p>Welcome to Gamers Paradise Loyalty! Track your visits, earn stamps, and unlock amazing rewards with every game session.</p>
+      </div>
+      
+      <div>
+        <p style="color:var(--muted);font-size:13px;margin-bottom:12px;text-transform:uppercase;letter-spacing:0.08em">This Month's Rewards</p>
+        <div class="rewards-showcase">
+          <div class="reward-tile">
+            <div class="icon">☕</div>
+            <div class="visits">3 visits</div>
+            <div class="name">Cold Coffee</div>
+          </div>
+          <div class="reward-tile">
+            <div class="icon">🍟</div>
+            <div class="visits">6 visits</div>
+            <div class="name">French Fries</div>
+          </div>
+          <div class="reward-tile">
+            <div class="icon">🎮</div>
+            <div class="visits">9 visits</div>
+            <div class="name">1-Hour Pass</div>
+          </div>
         </div>
-        <button id="stampBtn" class="stamp-btn">STAMP VISIT</button>
-        <p id="errorMsg" class="error-msg"></p>
       </div>
 
-      <div id="dashScreen" class="card">
-      <div class="dashboard-header">
-        <div>
-          <div class="status-pill">Loyalty Journey</div>
-          <h3 id="greetPhone">GUEST</h3>
-          <small id="monthLabel" style="color:var(--muted)"></small>
+      <div class="how-it-works">
+        <strong style="display:block;margin-bottom:10px">How It Works</strong>
+        <ul style="list-style:none">
+          <li><strong>✓ Daily Check-in:</strong> Tap the button to check in each day you visit</li>
+          <li><strong>✓ Earn Stamps:</strong> Each visit counts toward your reward milestones</li>
+          <li><strong>✓ Unlock Rewards:</strong> Reach 3, 6, 9+ visits to claim amazing rewards</li>
+          <li><strong>✓ Resets Monthly:</strong> Progress resets on the 1st of every month</li>
+        </ul>
+      </div>
+
+      <button class="primary-btn" id="startBtn">Start Check-In</button>
+      <p style="color:var(--muted);font-size:12px;text-align:center;margin-top:16px">We use your phone number only to track your visits. No data is shared.</p>
+    </div>
+
+    <!-- CHECK-IN SCREEN -->
+    <div id="checkinScreen" class="screen card">
+      <h2 style="margin-bottom:8px">Ready to Check In?</h2>
+      <p style="color:var(--muted);font-size:13px;margin-bottom:18px">Enter your mobile number to record your visit today.</p>
+      
+      <input id="phoneInput" type="tel" placeholder="10-digit number" maxlength="10" autocomplete="tel">
+      <div id="geoAlert" class="alert alert-warn" style="margin-top:12px">
+        <strong>📍 Location Check:</strong> We'll verify you're at our lounge to prevent cheating. This keeps rewards fair for everyone!
+      </div>
+
+      <button class="primary-btn" id="geoBtn" style="margin-top:16px">Enable Location & Check In</button>
+      <button class="secondary-btn" id="skipGeoBtn" style="width:100%;margin-top:8px">Check In Without Location</button>
+      
+      <div id="checkinAlert" class="alert"></div>
+      <button class="secondary-btn" id="backBtn" style="width:100%;margin-top:16px">← Back</button>
+    </div>
+
+    <!-- SUCCESS SCREEN -->
+    <div id="successScreen" class="screen card">
+      <div class="success-container">
+        <div class="success-icon">✅</div>
+        <h2 class="success-title">Check-In Confirmed!</h2>
+        <p class="success-subtitle" id="successGreeting"></p>
+        <p class="success-subtitle" id="successMsg"></p>
+
+        <div id="rewardUnlocked" class="reward-unlocked">
+          <strong style="display:block;font-size:16px;margin-bottom:8px">🎉 Reward Unlocked!</strong>
+          <p id="unlockedRewardText" style="margin:0;font-size:14px"></p>
+          <button id="claimBtn" class="claim-btn" style="width:100%;margin-top:12px;padding:10px;font-size:13px">CLAIM AT COUNTER</button>
         </div>
-        <div style="text-align:right">
-          <div id="visitCount" style="font-weight:900;font-size:20px">0</div>
-          <small style="color:var(--muted)">visits</small>
+
+        <div class="progress-section">
+          <label>
+            <span>Progress This Month</span>
+            <span id="progressText">0/18</span>
+          </label>
+          <div class="progress-track">
+            <div class="progress-fill" id="progBar"></div>
+          </div>
+        </div>
+
+        <div id="nextMilestone" class="next-reward-callout">
+          <strong id="nextMilestoneText"></strong>
+          <small id="nextMilestoneDesc"></small>
+        </div>
+
+        <div id="visitsDash" style="margin:16px 0;padding:16px;background:rgba(255,255,255,0.02);border-radius:10px;text-align:center">
+          <div style="font-size:28px;font-weight:900;color:var(--accent)" id="totalVisits">0</div>
+          <small style="color:var(--muted)">visits this month</small>
+        </div>
+
+        <button class="primary-btn" id="continueBtn" style="margin-top:16px">View Full Dashboard</button>
+        <button class="secondary-btn" id="newCheckInBtn" style="width:100%;margin-top:8px">New Check-In</button>
+      </div>
+    </div>
+
+    <!-- DASHBOARD SCREEN -->
+    <div id="dashScreen" class="screen card">
+      <div class="user-profile">
+        <div class="user-info">
+          <h3 id="userPhone">Guest</h3>
+          <small id="userMonth"></small>
+        </div>
+        <div class="visit-counter">
+          <div class="num" id="dashVisits">0</div>
+          <small>visits</small>
         </div>
       </div>
-      <div id="statusBanner" style="margin-bottom:12px;color:var(--muted)"></div>
-      <div id="milestoneGrid"></div>
+
+      <div class="progress-section">
+        <label>
+          <span>Monthly Progress</span>
+          <span id="dashProgressText">0/18</span>
+        </label>
+        <div class="progress-track">
+          <div class="progress-fill" id="dashProgBar"></div>
+        </div>
+      </div>
+
+      <div id="nextMilestoneCard" class="next-reward-callout" style="display:none">
+        <strong id="nextText"></strong>
+        <small id="nextDesc"></small>
+      </div>
+
+      <h4 style="font-size:12px;color:var(--muted);text-transform:uppercase;margin:20px 0 12px">Available Rewards</h4>
+      <div id="dashMilestones" class="milestone-grid"></div>
+
+      <div class="history-section">
+        <h4>Recent Check-Ins</h4>
+        <div id="visitLog" class="visit-log"></div>
+      </div>
+
+      <button class="secondary-btn" id="checkInBtn" style="width:100%;margin-top:20px">+ Check In Today</button>
     </div>
   </div>
 
-  <div class="loading-spinner" id="loadingSpinner"><div class="spinner"></div></div>
+  <!-- TERMS MODAL -->
+  <div id="termsModal" class="modal-overlay">
+    <div class="modal">
+      <button class="modal-close" id="closeTerms">✕</button>
+      <h3>Terms & Privacy</h3>
+      <p style="font-size:13px;color:var(--muted);line-height:1.6">
+        <strong>Your Data:</strong> We collect your phone number to track visits and reward progress. Your data is stored securely on Firebase and will never be shared with third parties.
+      </p>
+      <p style="font-size:13px;color:var(--muted);line-height:1.6;margin-top:12px">
+        <strong>Location:</strong> We request your location to prevent cheating. This is done only at check-in and is not stored long-term.
+      </p>
+      <p style="font-size:13px;color:var(--muted);line-height:1.6;margin-top:12px">
+        <strong>Rewards:</strong> Rewards reset monthly and are non-transferable. By checking in, you agree to these terms.
+      </p>
+      <button class="primary-btn" id="acceptTerms" style="margin-top:16px">I Understand</button>
+    </div>
+  </div>
+
+  <div id="loadingSpinner" class="loading-spinner">
+    <div class="spinner"></div>
+  </div>
 
   <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-    import { getFirestore, doc, getDoc, setDoc, updateDoc, serverTimestamp, collection, addDoc } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+    import { getFirestore, doc, getDoc, setDoc, updateDoc, serverTimestamp, collection, addDoc, getDocs, query, where } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
     import { getAuth, signInAnonymously } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
 
-    // FIREBASE CONFIG - replace with your values if needed
     const firebaseConfig = {
       apiKey: "AIzaSyBE_UvGf4ylNIsjQ_hDNGicp2iqQfEOkT4",
       authDomain: "gamersparadise-bdc7e.firebaseapp.com",
@@ -133,149 +325,262 @@
       appId: "1:409381337462:web:017001d388c9352f112257"
     };
 
-    // Location & rewards
-    const LOUNGE_LAT = 21.1458;
-    const LOUNGE_LON = 79.0882;
-    const MAX_DISTANCE_KM = 0.15; // 150 m
-    const REWARDS = {3: 'Cold Coffee', 6: 'French Fries', 9: '1-Hour Free Game Pass', 12: 'Paradise Special Mocktail', 15: 'Mystery Gift', 18: '3-Hour Free Game Pass'};
-    const REWARD_ICONS = {
-      3: '☕',
-      6: '🍟',
-      9: '🎮',
-      12: '🍹',
-      15: '🎁',
-      18: '⏱️'
-    };
+    const LOUNGE_LAT = 21.1458, LOUNGE_LON = 79.0882, MAX_DISTANCE_KM = 0.15;
+    const REWARDS = {3:'Cold Coffee',6:'French Fries',9:'1-Hour Free Game Pass',12:'Paradise Mocktail',15:'Mystery Gift',18:'3-Hour Game Pass'};
+    const ICONS = {3:'☕',6:'🍟',9:'🎮',12:'🍹',15:'🎁',18:'⏱️'};
 
-    let app = null, db = null, auth = null;
+    let app=null,db=null,auth=null,currentPhone=null,currentMonth=null,currentName=null;
 
-    function initializeFirebase(){
+    function initFirebase(){
       try{
-        if (!firebaseConfig.projectId || !firebaseConfig.apiKey) return false;
         app = initializeApp(firebaseConfig);
         db = getFirestore(app);
         auth = getAuth(app);
         signInAnonymously(auth).catch(()=>{});
         return true;
-      }catch(e){console.error('Firebase init failed',e);return false}
+      }catch(e){return false}
     }
 
-    function getMonthKey(){const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`}
-    function getTodayKey(){const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
+    const utils = {
+      monthKey: ()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`},
+      todayKey: ()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`},
+      toRad: (d)=>d*Math.PI/180,
+      distance: (lat1,lon1,lat2,lon2)=>{const R=6371,dLat=utils.toRad(lat2-lat1),dLon=utils.toRad(lon2-lon1),a=Math.sin(dLat/2)**2+Math.cos(utils.toRad(lat1))*Math.cos(utils.toRad(lat2))*Math.sin(dLon/2)**2;return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a))},
+      formatDate: (dateStr)=>{const[y,m,d]=dateStr.split('-');return new Date(y,m-1,d).toLocaleDateString('en-IN',{day:'numeric',month:'short'})},
+      showAlert: (el,msg,type='error')=>{el.textContent=msg;el.className=`alert show alert-${type}`},
+      hideAlert: (el)=>{el.classList.remove('show')},
+      screen: (name)=>{document.querySelectorAll('.screen').forEach(s=>{s.classList.remove('active')});
+      document.getElementById(name+'Screen').classList.add('active')},
+      confetti: ()=>{for(let i=0;i<50;i++){const el=document.createElement('div');el.className='confetti';el.style.left=(Math.random()*100)+'%';el.style.top='0';el.style.width='8px';el.style.height='8px';el.style.background=['#ffd86f','#ff6bcb','#7b2cbf','#00e676'][Math.floor(Math.random()*4)];el.style.position='fixed';el.style.pointerEvents='none';el.style.zIndex='1000';document.body.appendChild(el);const dur=2000+Math.random()*1000;el.animate([{transform:'translateY(0)',opacity:1},{transform:`translateY(${100+Math.random()*100}vh) rotate(${Math.random()*360}deg)`,opacity:0}],{duration:dur,easing:'cubic-bezier(0.25,0.46,0.45,0.94)'});setTimeout(()=>el.remove(),dur)}}
+    };
 
-    function toRad(deg){return deg*Math.PI/180}
-    function getDistanceKM(lat1,lon1,lat2,lon2){
-      const R=6371;const dLat=toRad(lat2-lat1);const dLon=toRad(lon2-lon1);
-      const a=Math.sin(dLat/2)**2 + Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dLon/2)**2;
-      return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
-    }
-
-    function getUserLocation(){
-      return new Promise((resolve,reject)=>{
-        if(!navigator.geolocation) return reject(new Error('Geolocation not supported'));
-        navigator.geolocation.getCurrentPosition(resolve,reject,{enableHighAccuracy:true,timeout:8000,maximumAge:0});
-      });
-    }
-
-    async function stampVisit(phone, sessionToken='web-manual'){
-      if (!db) throw new Error('Firebase not initialized');
-      const uid = 'user_' + phone;
-      const monthKey = getMonthKey();
-      const todayKey = getTodayKey();
-      const docRef = doc(db, 'loyalty_users', uid);
-      const docSnap = await getDoc(docRef);
-      let userData = docSnap.exists() ? docSnap.data() : {phone, createdAt: serverTimestamp(), months:{}};
-      if (!userData.months) userData.months = {};
-      if (!userData.months[monthKey]) userData.months[monthKey] = {visits:0, dates:[], claimed:[], checkInRecords:[], monthStartDate: serverTimestamp()};
-      const monthData = userData.months[monthKey];
-      if (monthData.dates.includes(todayKey)) return {success:false,alreadyVisited:true,monthData,monthKey};
-      monthData.visits += 1; monthData.dates.push(todayKey);
-      // Record check-in as a separate document in a subcollection to allow serverTimestamp()
-      const checkInsRef = collection(db, 'loyalty_users', uid, 'checkIns');
-      await addDoc(checkInsRef, { phone, date: todayKey, monthKey, sessionToken, timestamp: new Date().toISOString(), serverTimestamp: serverTimestamp() });
-      // detect new reward
+    async function stampVisit(phone){
+      const uid='user_'+phone;
+      const mk=utils.monthKey();
+      const tk=utils.todayKey();
+      const docRef=doc(db,'loyalty_users',uid);
+      const snap=await getDoc(docRef);
+      
+      let data = snap.exists() ? snap.data() : {phone,createdAt:new Date().toISOString(),months:{}};
+      if(!data.months) data.months={};
+      if(!data.months[mk]) data.months[mk]={visits:0,dates:[],claimed:[],monthStartDate:new Date().toISOString()};
+      
+      const monthData = data.months[mk];
+      if(monthData.dates.includes(tk)) return {success:false,alreadyVisited:true,visits:monthData.visits,claimed:monthData.claimed,dates:monthData.dates};
+      
+      monthData.visits += 1;
+      monthData.dates.push(tk);
+      
+      const cinsRef = collection(db,'loyalty_users',uid,'checkIns');
+      await addDoc(cinsRef,{date:tk,timestamp:new Date().toISOString()});
+      
       const milestones = Object.keys(REWARDS).map(Number).sort((a,b)=>a-b);
-      let newReward=null;
-      for(const m of milestones){ if(monthData.visits===m && !monthData.claimed.includes(m)){ newReward={visits:m,reward:REWARDS[m]}; break }}
-      if(!docSnap.exists()) await setDoc(docRef, userData); else await updateDoc(docRef, { [`months.${monthKey}`]: monthData });
-      return {success:true,alreadyVisited:false,monthData,monthKey,newReward,timestamp:new Date().toISOString()};
+      let newReward = null;
+      for(const m of milestones){if(monthData.visits===m && !monthData.claimed.includes(m)){newReward={m,name:REWARDS[m]};break}}
+      
+      if(!snap.exists()) await setDoc(docRef,data);
+      else await updateDoc(docRef,{[`months.${mk}`]:monthData});
+      
+      return {success:true,alreadyVisited:false,visits:monthData.visits,claimed:monthData.claimed,dates:monthData.dates,newReward};
     }
 
-    async function claimReward(phone,milestoneVisit){
-      if(!db) throw new Error('Firebase not initialized');
-      const uid='user_'+phone; const monthKey=getMonthKey(); const docRef=doc(db,'loyalty_users',uid);
-      const docSnap = await getDoc(docRef);
-      if(!docSnap.exists()) throw new Error('User not found');
-      const userData = docSnap.data(); const monthData = userData.months?.[monthKey]; if(!monthData) throw new Error('Month data not found');
-      if(!monthData.claimed.includes(milestoneVisit)){ monthData.claimed.push(milestoneVisit); await updateDoc(docRef,{ [`months.${monthKey}`]: monthData }); return {success:true} }
-      return {success:false,message:'Already claimed'};
+    async function claimReward(phone,milestone){
+      const uid='user_'+phone;
+      const mk=utils.monthKey();
+      const docRef=doc(db,'loyalty_users',uid);
+      const snap=await getDoc(docRef);
+      if(!snap.exists()) throw new Error('User not found');
+      const data=snap.data();
+      const monthData=data.months?.[mk];
+      if(!monthData) throw new Error('Month data not found');
+      if(!monthData.claimed.includes(milestone)){monthData.claimed.push(milestone);await updateDoc(docRef,{[`months.${mk}`]:monthData})}
     }
 
-    // UI
-    window.addEventListener('load', async ()=>{
+    async function fetchUserData(phone){
+      const uid='user_'+phone;
+      const docRef=doc(db,'loyalty_users',uid);
+      const snap=await getDoc(docRef);
+      if(!snap.exists()) return null;
+      const data=snap.data();
+      const mk=utils.monthKey();
+      return {visits:data.months?.[mk]?.visits||0,claimed:data.months?.[mk]?.claimed||[],dates:data.months?.[mk]?.dates||[]};
+    }
+
+    async function fetchCustomerName(phone){
+      const customersRef = collection(db,'gamers_paradise_data','gamersparadise_prod','customers');
+      const q = query(customersRef, where('phone', '==', phone));
+      const snap = await getDocs(q);
+      if(snap.empty) return null;
+      const customer = snap.docs[0].data();
+      return customer.name || null;
+    }
+
+    function renderMilestones(visits,claimed,targetEl){
+      targetEl.innerHTML='';
+      const milestones=[3,6,9,12,15,18];
+      for(const m of milestones){
+        const done=visits>=m;
+        const isClaimed=claimed.includes(m);
+        const el=document.createElement('div');
+        el.className='milestone-item';
+        if(done) el.classList.add('unlocked');
+        if(isClaimed) el.classList.add('claimed');
+        el.innerHTML=`
+          <div class="milestone-icon">${ICONS[m]}</div>
+          <div class="milestone-details">
+            <strong>${m} visits</strong>
+            <small>${REWARDS[m]}</small>
+          </div>
+          <div class="milestone-status ${done && !isClaimed?'unlocked':isClaimed?'claimed':'locked'}">
+            ${isClaimed?'✓ Claimed':done?'<button class="claim-btn" data-m="'+m+'">CLAIM</button>':'🔒 Locked'}
+          </div>`;
+        targetEl.appendChild(el);
+      }
+      targetEl.querySelectorAll('.claim-btn').forEach(btn=>btn.addEventListener('click',async(e)=>{
+        const m=parseInt(e.target.dataset.m);
+        try{await claimReward(currentPhone,m);utils.confetti();e.target.closest('.milestone-status').innerHTML='✓ Claimed';}catch(err){}
+      }));
+    }
+
+    function renderDashboard(visits,claimed,dates,name){
+      const displayName = name ? name : 'user';
+      document.getElementById('userPhone').textContent=`Hi ${displayName}`;
+      document.getElementById('userMonth').textContent=new Date().toLocaleString(undefined,{month:'long',year:'numeric'});
+      document.getElementById('dashVisits').textContent=visits;
+      const pct=Math.min((visits/18)*100,100);
+      document.getElementById('dashProgBar').style.width=pct+'%';
+      document.getElementById('dashProgressText').textContent=visits+'/18';
+      
+      const milestones=[3,6,9,12,15,18];
+      const nextM=milestones.find(m=>m>visits);
+      if(nextM){
+        document.getElementById('nextMilestoneCard').style.display='block';
+        document.getElementById('nextText').textContent=`${nextM-visits} visit${nextM-visits>1?'s':''} to ${REWARDS[nextM]}`;
+        document.getElementById('nextDesc').textContent=`Keep going! You're almost there.`;
+      }
+      
+      renderMilestones(visits,claimed,document.getElementById('dashMilestones'));
+      
+      const logEl=document.getElementById('visitLog');
+      logEl.innerHTML='';
+      if(dates.length===0) logEl.innerHTML='<div style="color:var(--muted);font-size:12px">No visits yet. Start checking in!</div>';
+      else dates.slice().reverse().forEach(d=>{const item=document.createElement('div');item.className='visit-item';item.innerHTML=`<span class="date">${utils.formatDate(d)}</span><span class="badge">Visited</span>`;logEl.appendChild(item)});
+    }
+
+    // Setup UI
+    window.addEventListener('load',async()=>{
+      if(!initFirebase()) return;
+      
+      // Modal
+      document.getElementById('termsBtn').addEventListener('click',()=>document.getElementById('termsModal').classList.add('show'));
+      document.getElementById('closeTerms').addEventListener('click',()=>document.getElementById('termsModal').classList.remove('show'));
+      document.getElementById('acceptTerms').addEventListener('click',()=>document.getElementById('termsModal').classList.remove('show'));
+      
+      // Landing -> Check-in
+      document.getElementById('startBtn').addEventListener('click',()=>utils.screen('checkin'));
+      document.getElementById('backBtn').addEventListener('click',()=>utils.screen('landing'));
+      
+      // Check-in flow
       const phoneInput=document.getElementById('phoneInput');
-      const stampBtn=document.getElementById('stampBtn');
-      const loginScreen=document.getElementById('loginScreen');
-      const dashScreen=document.getElementById('dashScreen');
-      const errorMsg=document.getElementById('errorMsg');
+      const geoBtn=document.getElementById('geoBtn');
+      const skipGeoBtn=document.getElementById('skipGeoBtn');
+      const checkinAlert=document.getElementById('checkinAlert');
       const loadingSpinner=document.getElementById('loadingSpinner');
-
-      const firebaseReady = initializeFirebase();
-      if(!firebaseReady){ errorMsg.style.display='block'; errorMsg.textContent='Firebase configuration missing or invalid.'; stampBtn.disabled=true; return }
-
-      function showLoading(show){ loadingSpinner.style.display = show ? 'flex' : 'none'; stampBtn.disabled = show }
-
-      function launchConfetti(){
-        const colors=['#ff6b6b','#ffd86f','#9d4edd','#6ef3ff','#7bed9f'];
-        for(let i=0;i<30;i++){const el=document.createElement('div');el.className='confetti-piece';el.style.left=(Math.random()*100)+'%';el.style.top='-10%';el.style.width='10px';el.style.height='14px';el.style.background=colors[Math.floor(Math.random()*colors.length)];el.style.transform='rotate('+Math.random()*360+'deg)';document.body.appendChild(el);const dur=2000+Math.random()*1800;el.animate([{transform:'translateY(0) rotate(0deg)',opacity:1},{transform:'translateY(120vh) rotate(360deg)',opacity:0}],{duration:dur, easing:'cubic-bezier(.2,.8,.2,1)'});setTimeout(()=>el.remove(),dur+50)}
-      }
-
-      function showDashboard(phone,result){
-        loginScreen.style.display='none'; dashScreen.style.display='block';
-        const {monthData,newReward} = result; const visits = monthData.visits || 0; const claimed = monthData.claimed || [];
-        document.getElementById('greetPhone').textContent = '+91 ' + phone.slice(-10);
-        document.getElementById('monthLabel').textContent = new Date().toLocaleString(undefined,{month:'long',year:'numeric'});
-        document.getElementById('visitCount').textContent = visits;
-        const statusBanner = document.getElementById('statusBanner');
-        if(newReward){ statusBanner.textContent = `LEVEL UP! Unlocked: ${newReward.reward} — claim at the counter.`; launchConfetti(); } else statusBanner.textContent = '';
-        const grid = document.getElementById('milestoneGrid'); grid.innerHTML=''; const milestones=[3,6,9,12,15,18];
-        for(const m of milestones){
-          const done = visits >= m; const isClaimed = claimed.includes(m);
-          const card = document.createElement('div'); card.className='milestone-card';
-          const name = REWARDS[m] || 'Reward';
-          const icon = REWARD_ICONS[m] || '🎁';
-          card.innerHTML = `
-            <div class="reward-img">${icon}</div>
-            <div class="m-info"><strong>${m} visits</strong><small>${name}</small></div>
-            <div class="m-status" id="status-${m}"></div>`;
-          grid.appendChild(card);
-          const statusEl = card.querySelector('#status-'+m);
-          if(done && !isClaimed){ const btn = document.createElement('button'); btn.textContent='REDEEM'; btn.className='stamp-btn'; btn.style.padding='8px 10px'; btn.addEventListener('click', async ()=>{ try{ await claimReward(phone,m); statusEl.textContent='✔ CLAIMED'; btn.remove(); }catch(e){ alert('Error: '+e.message) } }); statusEl.appendChild(btn) }
-          else if(done && isClaimed) statusEl.textContent='✔ CLAIMED'; else statusEl.textContent='LOCKED';
+      
+      async function doCheckin(useGeo){
+        utils.hideAlert(checkinAlert);
+        const phone=(phoneInput.value||'').trim().replace(/\D/g,'');
+        if(!/^[0-9]{10}$/.test(phone)){utils.showAlert(checkinAlert,'Please enter 10-digit number','error');return}
+        
+        loadingSpinner.classList.add('show');
+        
+        if(useGeo){
+          try{
+            const pos=await Promise.race([
+              new Promise((res,rej)=>navigator.geolocation.getCurrentPosition(res,rej,{enableHighAccuracy:true,timeout:8000})),
+              new Promise((_,rej)=>setTimeout(()=>rej(new Error('Timeout')),8000))
+            ]);
+            const dist=utils.distance(pos.coords.latitude,pos.coords.longitude,LOUNGE_LAT,LOUNGE_LON);
+            if(dist>MAX_DISTANCE_KM){loadingSpinner.classList.remove('show');utils.showAlert(checkinAlert,`You're ${(dist*1000).toFixed(0)}m away. Must be at the lounge.`,'error');return}
+          }catch(e){
+            loadingSpinner.classList.remove('show');
+            utils.showAlert(checkinAlert,'Enable location in browser settings','error');
+            return;
+          }
         }
-        // update progress fill
-        const pct = Math.min((visits / 18) * 100, 100);
-        let fill = document.querySelector('.progress-fill');
-        if(!fill){ const wrap = document.createElement('div'); wrap.style.margin='12px 0'; wrap.innerHTML = `<div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div><div style="text-align:right;color:var(--muted);font-size:12px;margin-top:6px">PROGRESS ${visits} / 18 visits</div>`; grid.parentNode.insertBefore(wrap, grid); } else { fill.style.width = pct + '%'; }
+        
+        try{
+          currentPhone=phone;
+          currentMonth=utils.monthKey();
+          currentName = await fetchCustomerName(phone);
+          const result=await stampVisit(phone);
+          loadingSpinner.classList.remove('show');
+          const greeting = `Hi ${currentName || 'user'}`;
+          document.getElementById('successGreeting').textContent = greeting;
+          
+          if(result.alreadyVisited){
+            utils.showAlert(checkinAlert,'Already checked in today','warn');
+            setTimeout(()=>{
+              const data=result;
+              document.getElementById('totalVisits').textContent=data.visits;
+              const pct=Math.min((data.visits/18)*100,100);
+              document.getElementById('progBar').style.width=pct+'%';
+              document.getElementById('progressText').textContent=data.visits+'/18';
+              document.getElementById('successMsg').textContent='You already checked in today. Come back tomorrow!';
+              document.getElementById('rewardUnlocked').classList.remove('show');
+              const milestones=[3,6,9,12,15,18];
+              const nextM=milestones.find(m=>m>data.visits);
+              if(nextM){
+                document.getElementById('nextMilestoneText').textContent=`${nextM-data.visits} visit${nextM-data.visits>1?'s':''} away`;
+                document.getElementById('nextMilestoneDesc').textContent=`Next: ${REWARDS[nextM]}`;
+              }
+              utils.screen('success');
+            },1500);
+          }else{
+            const {visits,claimed,dates,newReward}=result;
+            document.getElementById('totalVisits').textContent=visits;
+            const pct=Math.min((visits/18)*100,100);
+            document.getElementById('progBar').style.width=pct+'%';
+            document.getElementById('progressText').textContent=visits+'/18';
+            document.getElementById('successMsg').textContent=`Visit #${visits} recorded!`;
+            
+            if(newReward){
+              utils.confetti();
+              document.getElementById('rewardUnlocked').classList.add('show');
+              document.getElementById('unlockedRewardText').textContent=`You unlocked ${ICONS[newReward.m]} ${newReward.name}! Show this to claim at the counter.`;
+              document.getElementById('claimBtn').addEventListener('click',async()=>{await claimReward(phone,newReward.m);document.getElementById('claimBtn').textContent='✓ CLAIMED';});
+            }else{
+              document.getElementById('rewardUnlocked').classList.remove('show');
+            }
+            
+            const milestones=[3,6,9,12,15,18];
+            const nextM=milestones.find(m=>m>visits);
+            if(nextM){
+              document.getElementById('nextMilestoneText').textContent=`${nextM-visits} visit${nextM-visits>1?'s':''} away`;
+              document.getElementById('nextMilestoneDesc').textContent=`Next: ${REWARDS[nextM]}`;
+            }
+            
+            utils.screen('success');
+          }
+        }catch(e){
+          loadingSpinner.classList.remove('show');
+          utils.showAlert(checkinAlert,e.message,'error');
+        }
       }
-
-      stampBtn.addEventListener('click', async ()=>{
-        errorMsg.style.display='none'; const phone = (phoneInput.value||'').trim();
-        if(!/^[0-9]{10}$/.test(phone)){ errorMsg.style.display='block'; errorMsg.textContent='Please enter a valid 10-digit mobile number.'; return }
-        showLoading(true);
-        // optional geolocation check (best-effort)
-        try{
-          const pos = await Promise.race([getUserLocation(), new Promise((_,rej)=>setTimeout(()=>rej(new Error('geo timeout')),5000))]);
-          const distance = getDistanceKM(pos.coords.latitude,pos.coords.longitude,LOUNGE_LAT,LOUNGE_LON);
-          if(distance > MAX_DISTANCE_KM) { showLoading(false); errorMsg.style.display='block'; errorMsg.textContent = `You're ${(distance*1000).toFixed(0)}m away. Must be within 150m.`; return }
-        }catch(e){ console.warn('Geolocation skipped',e.message) }
-
-        try{
-          const result = await stampVisit(phone,'web-manual');
-          showLoading(false);
-          if(result.alreadyVisited){ errorMsg.style.display='block'; errorMsg.textContent='You already checked in today.'; } else { showDashboard(phone,result) }
-        }catch(e){ showLoading(false); errorMsg.style.display='block'; errorMsg.textContent = e.message }
+      
+      geoBtn.addEventListener('click',()=>doCheckin(true));
+      skipGeoBtn.addEventListener('click',()=>doCheckin(false));
+      
+      // Success -> Dashboard
+      document.getElementById('continueBtn').addEventListener('click',async()=>{
+        const data=await fetchUserData(currentPhone);
+        const name = currentName || await fetchCustomerName(currentPhone);
+        if(data) renderDashboard(data.visits,data.claimed,data.dates,name);
+        utils.screen('dash');
       });
+      
+      document.getElementById('newCheckInBtn').addEventListener('click',()=>{phoneInput.value='';utils.screen('checkin')});
+      document.getElementById('checkInBtn').addEventListener('click',()=>{phoneInput.value='';utils.screen('checkin')});
     });
   </script>
 </body>
