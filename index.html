@@ -421,7 +421,7 @@
       }catch(_){ }
       try{
         const sessionsRef = collection(db,'sessions');
-        const q = query(sessionsRef, where('code','==',code));
+        const q = query(sessionsRef, where('qrCode','==',code));
         const snap = await getDocs(q);
         if(snap.empty) return false;
         const sessionDoc = snap.docs[0];
