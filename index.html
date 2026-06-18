@@ -72,7 +72,22 @@
     .reward-unlocked.show{display:block;animation:slideUp 0.4s ease}
     @keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
     .reward-unlocked strong{color:var(--warn)}
-    
+    .reward-map{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding:18px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:16px;margin:18px 0}
+    .reward-node{background:linear-gradient(180deg,rgba(123,44,191,0.15),rgba(255,255,255,0.04));border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:14px;display:flex;flex-direction:column;align-items:center;gap:8px;position:relative;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,0.18)}
+    .reward-node::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at top,left,rgba(255,255,255,0.15),transparent 55%);opacity:0.5;pointer-events:none}
+    .reward-node.locked{opacity:0.55}
+    .reward-node.unlocked{border-color:rgba(255,214,0,0.6)}
+    .reward-node.claimed{border-color:rgba(0,230,118,0.6);box-shadow:0 0 0 1px rgba(0,230,118,0.12)}
+    .reward-node .node-icon{font-size:28px}
+    .reward-node .node-title{font-weight:800;font-size:14px}
+    .reward-node .node-subtitle{color:var(--muted);font-size:12px;text-align:center}
+    .reward-node .node-state{font-size:11px;font-weight:700;padding:4px 8px;border-radius:999px;letter-spacing:0.04em}
+    .reward-node.unlocked .node-state{background:rgba(255,214,0,0.18);color:var(--warn)}
+    .reward-node.claimed .node-state{background:rgba(0,230,118,0.18);color:var(--success)}
+    .reward-node.locked .node-state{background:rgba(255,255,255,0.08);color:var(--muted)}
+    .scanner-panel{margin-top:18px;padding:18px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:16px;display:flex;flex-direction:column;align-items:center;gap:14px}
+    .scanner-panel video{width:100%;border-radius:16px;aspect-ratio:4/3;object-fit:cover;border:1px solid rgba(255,255,255,0.1);box-shadow:0 18px 35px rgba(0,0,0,0.15)}
+    .scanner-panel p{color:var(--muted);font-size:13px;text-align:center;margin:0}
     .progress-section{background:rgba(255,255,255,0.02);padding:16px;border-radius:10px;margin:16px 0;text-align:left}
     .progress-section label{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:8px;text-transform:uppercase}
     .progress-track{height:8px;background:rgba(255,255,255,0.05);border-radius:6px;overflow:hidden}
@@ -199,13 +214,19 @@
       <p style="color:var(--muted);font-size:13px;margin-bottom:18px">Enter your mobile number to record your visit today.</p>
       
       <input id="phoneInput" type="tel" placeholder="10-digit number" maxlength="10" autocomplete="tel">
-      <div id="geoAlert" class="alert alert-warn" style="margin-top:12px">
-        <strong>📍 Location Check:</strong> We'll verify you're at our lounge to prevent cheating. This keeps rewards fair for everyone!
+      <div id="cameraAlert" class="alert alert-warn" style="margin-top:12px">
+        <strong>📸 QR Check-In:</strong> Scan the lounge QR code using your camera to punch your visit.
       </div>
 
-      <button class="primary-btn" id="geoBtn" style="margin-top:16px">Enable Location & Check In</button>
-      <button class="secondary-btn" id="skipGeoBtn" style="width:100%;margin-top:8px">Check In Without Location</button>
+      <button class="primary-btn" id="scanBtn" style="margin-top:16px">Scan Lounge QR</button>
       
+      <div id="scannerPanel" class="scanner-panel" style="display:none">
+        <video id="qrVideo" playsinline muted></video>
+        <canvas id="qrCanvas" hidden></canvas>
+        <p id="scanStatus">Point your camera at the QR code shown by staff.</p>
+        <button class="secondary-btn" id="cancelScanBtn" style="width:100%;margin-top:12px">Cancel Scan</button>
+      </div>
+
       <div id="checkinAlert" class="alert"></div>
       <button class="secondary-btn" id="backBtn" style="width:100%;margin-top:16px">← Back</button>
     </div>
@@ -223,6 +244,8 @@
           <p id="unlockedRewardText" style="margin:0;font-size:14px"></p>
           <button id="claimBtn" class="claim-btn" style="width:100%;margin-top:12px;padding:10px;font-size:13px">CLAIM AT COUNTER</button>
         </div>
+
+        <div id="rewardMap" class="reward-map"></div>
 
         <div class="progress-section">
           <label>
@@ -298,7 +321,7 @@
         <strong>Your Data:</strong> We collect your phone number to track visits and reward progress. Your data is stored securely on Firebase and will never be shared with third parties.
       </p>
       <p style="font-size:13px;color:var(--muted);line-height:1.6;margin-top:12px">
-        <strong>Location:</strong> We request your location to prevent cheating. This is done only at check-in and is not stored long-term.
+        <strong>Camera:</strong> We request camera access to scan the lounge QR code at check-in. This is done only during the visit and is not stored long-term.
       </p>
       <p style="font-size:13px;color:var(--muted);line-height:1.6;margin-top:12px">
         <strong>Rewards:</strong> Rewards reset monthly and are non-transferable. By checking in, you agree to these terms.
@@ -311,6 +334,7 @@
     <div class="spinner"></div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
   <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
     import { getFirestore, doc, getDoc, setDoc, updateDoc, serverTimestamp, collection, addDoc, getDocs, query, where } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
@@ -325,11 +349,10 @@
       appId: "1:409381337462:web:017001d388c9352f112257"
     };
 
-    const LOUNGE_LAT = 21.1458, LOUNGE_LON = 79.0882, MAX_DISTANCE_KM = 0.15;
     const REWARDS = {3:'Cold Coffee',6:'French Fries',9:'1-Hour Free Game Pass',12:'Paradise Mocktail',15:'Mystery Gift',18:'3-Hour Game Pass'};
     const ICONS = {3:'☕',6:'🍟',9:'🎮',12:'🍹',15:'🎁',18:'⏱️'};
 
-    let app=null,db=null,auth=null,currentPhone=null,currentMonth=null,currentName=null;
+    let app=null,db=null,auth=null,currentPhone=null,currentMonth=null,currentName=null,videoStream=null,scanActive=false;
 
     function initFirebase(){
       try{
@@ -382,6 +405,31 @@
       else await updateDoc(docRef,{[`months.${mk}`]:monthData});
       
       return {success:true,alreadyVisited:false,visits:monthData.visits,claimed:monthData.claimed,dates:monthData.dates,newReward};
+    }
+
+    async function verifySessionCode(code){
+      if(!code) return false;
+      const directRef = doc(db,'sessions',code);
+      try{
+        const directSnap = await getDoc(directRef);
+        if(directSnap.exists()){
+          const directData = directSnap.data();
+          if(directData.used) return false;
+          await updateDoc(directRef,{used:true,scannedAt:serverTimestamp()});
+          return true;
+        }
+      }catch(_){ }
+      try{
+        const sessionsRef = collection(db,'sessions');
+        const q = query(sessionsRef, where('code','==',code));
+        const snap = await getDocs(q);
+        if(snap.empty) return false;
+        const sessionDoc = snap.docs[0];
+        const sessionData = sessionDoc.data();
+        if(sessionData.used) return false;
+        await updateDoc(sessionDoc.ref,{used:true,scannedAt:serverTimestamp()});
+        return true;
+      }catch(_){return false}
     }
 
     async function claimReward(phone,milestone){
@@ -480,107 +528,162 @@
       document.getElementById('startBtn').addEventListener('click',()=>utils.screen('checkin'));
       document.getElementById('backBtn').addEventListener('click',()=>utils.screen('landing'));
       
-      // Check-in flow
       const phoneInput=document.getElementById('phoneInput');
-      const geoBtn=document.getElementById('geoBtn');
-      const skipGeoBtn=document.getElementById('skipGeoBtn');
+      const scanBtn=document.getElementById('scanBtn');
+      const scannerPanel=document.getElementById('scannerPanel');
+      const qrVideo=document.getElementById('qrVideo');
+      const qrCanvas=document.getElementById('qrCanvas');
+      const scanStatus=document.getElementById('scanStatus');
+      const cancelScanBtn=document.getElementById('cancelScanBtn');
       const checkinAlert=document.getElementById('checkinAlert');
       const loadingSpinner=document.getElementById('loadingSpinner');
       
-      async function doCheckin(useGeo){
+      function stopVideoStream(){
+        scanActive=false;
+        if(videoStream){
+          videoStream.getTracks().forEach(track=>track.stop());
+          videoStream=null;
+        }
+        qrVideo.pause();
+        qrVideo.srcObject = null;
+        scannerPanel.style.display='none';
+      }
+      
+      function showScanner(){
+        scannerPanel.style.display='flex';
+        scanStatus.textContent='Point your camera at the lounge QR code.';
+      }
+      
+      async function startQRCodeScan(){
         utils.hideAlert(checkinAlert);
         const phone=(phoneInput.value||'').trim().replace(/\D/g,'');
         if(!/^[0-9]{10}$/.test(phone)){utils.showAlert(checkinAlert,'Please enter 10-digit number','error');return}
-        
-        loadingSpinner.classList.add('show');
-        
-        if(useGeo){
-          try{
-            const pos=await Promise.race([
-              new Promise((res,rej)=>navigator.geolocation.getCurrentPosition(res,rej,{enableHighAccuracy:true,timeout:8000})),
-              new Promise((_,rej)=>setTimeout(()=>rej(new Error('Timeout')),8000))
-            ]);
-            const dist=utils.distance(pos.coords.latitude,pos.coords.longitude,LOUNGE_LAT,LOUNGE_LON);
-            if(dist>MAX_DISTANCE_KM){loadingSpinner.classList.remove('show');utils.showAlert(checkinAlert,`You're ${(dist*1000).toFixed(0)}m away. Must be at the lounge.`,'error');return}
-          }catch(e){
-            loadingSpinner.classList.remove('show');
-            utils.showAlert(checkinAlert,'Enable location in browser settings','error');
-            return;
-          }
-        }
-        
+        currentPhone=phone;
+
         try{
-          currentPhone=phone;
-          currentMonth=utils.monthKey();
-          currentName = await fetchCustomerName(phone);
-          const result=await stampVisit(phone);
-          loadingSpinner.classList.remove('show');
-          const greeting = `Hi ${currentName || 'user'}`;
-          document.getElementById('successGreeting').textContent = greeting;
-          
-          if(result.alreadyVisited){
-            utils.showAlert(checkinAlert,'Already checked in today','warn');
-            setTimeout(()=>{
-              const data=result;
-              document.getElementById('totalVisits').textContent=data.visits;
-              const pct=Math.min((data.visits/18)*100,100);
-              document.getElementById('progBar').style.width=pct+'%';
-              document.getElementById('progressText').textContent=data.visits+'/18';
-              document.getElementById('successMsg').textContent='You already checked in today. Come back tomorrow!';
-              document.getElementById('rewardUnlocked').classList.remove('show');
-              const milestones=[3,6,9,12,15,18];
-              const nextM=milestones.find(m=>m>data.visits);
-              if(nextM){
-                document.getElementById('nextMilestoneText').textContent=`${nextM-data.visits} visit${nextM-data.visits>1?'s':''} away`;
-                document.getElementById('nextMilestoneDesc').textContent=`Next: ${REWARDS[nextM]}`;
-              }
-              utils.screen('success');
-            },1500);
-          }else{
-            const {visits,claimed,dates,newReward}=result;
-            document.getElementById('totalVisits').textContent=visits;
-            const pct=Math.min((visits/18)*100,100);
-            document.getElementById('progBar').style.width=pct+'%';
-            document.getElementById('progressText').textContent=visits+'/18';
-            document.getElementById('successMsg').textContent=`Visit #${visits} recorded!`;
-            
-            if(newReward){
-              utils.confetti();
-              document.getElementById('rewardUnlocked').classList.add('show');
-              document.getElementById('unlockedRewardText').textContent=`You unlocked ${ICONS[newReward.m]} ${newReward.name}! Show this to claim at the counter.`;
-              document.getElementById('claimBtn').addEventListener('click',async()=>{await claimReward(phone,newReward.m);document.getElementById('claimBtn').textContent='✓ CLAIMED';});
-            }else{
-              document.getElementById('rewardUnlocked').classList.remove('show');
-            }
-            
-            const milestones=[3,6,9,12,15,18];
-            const nextM=milestones.find(m=>m>visits);
-            if(nextM){
-              document.getElementById('nextMilestoneText').textContent=`${nextM-visits} visit${nextM-visits>1?'s':''} away`;
-              document.getElementById('nextMilestoneDesc').textContent=`Next: ${REWARDS[nextM]}`;
-            }
-            
-            utils.screen('success');
-          }
+          videoStream = await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});
+          qrVideo.srcObject = videoStream;
+          await qrVideo.play();
+          scanActive = true;
+          showScanner();
+          requestAnimationFrame(scanFrame);
         }catch(e){
-          loadingSpinner.classList.remove('show');
-          utils.showAlert(checkinAlert,e.message,'error');
+          utils.showAlert(checkinAlert,'Camera access is required for QR check-in. Please allow camera permissions.','error');
         }
       }
       
-      geoBtn.addEventListener('click',()=>doCheckin(true));
-      skipGeoBtn.addEventListener('click',()=>doCheckin(false));
+      async function scanFrame(){
+        if(!scanActive) return;
+        if(qrVideo.readyState === HTMLVideoElement.HAVE_ENOUGH_DATA){
+          qrCanvas.width = qrVideo.videoWidth;
+          qrCanvas.height = qrVideo.videoHeight;
+          const ctx = qrCanvas.getContext('2d');
+          ctx.drawImage(qrVideo,0,0,qrCanvas.width,qrCanvas.height);
+          const imageData = ctx.getImageData(0,0,qrCanvas.width,qrCanvas.height);
+          const code = jsQR(imageData.data, imageData.width, imageData.height, {inversionAttempts:'dontInvert'});
+          if(code && code.data){
+            scanStatus.textContent='QR found! Verifying...';
+            scanActive=false;
+            await processQRCode(code.data);
+            return;
+          }
+        }
+        requestAnimationFrame(scanFrame);
+      }
       
-      // Success -> Dashboard
+      async function processQRCode(scannedCode){
+        try{
+          const valid = await verifySessionCode(scannedCode.trim());
+          if(!valid){
+            utils.showAlert(checkinAlert,'QR code was invalid or already used. Please try again.','error');
+            stopVideoStream();
+            return;
+          }
+          stopVideoStream();
+          await completeCheckin(currentPhone);
+        }catch(e){
+          utils.showAlert(checkinAlert,'QR verification failed. Please try again.','error');
+          stopVideoStream();
+        }
+      }
+      
+      async function completeCheckin(phone){
+        loadingSpinner.classList.add('show');
+        try{
+          currentMonth=utils.monthKey();
+          currentName = await fetchCustomerName(phone);
+          const result = await stampVisit(phone);
+          loadingSpinner.classList.remove('show');
+          const greeting = `Hi ${currentName || 'user'}`;
+          document.getElementById('successGreeting').textContent = greeting;
+          document.getElementById('totalVisits').textContent = result.visits;
+          const pct=Math.min((result.visits/18)*100,100);
+          document.getElementById('progBar').style.width=pct+'%';
+          document.getElementById('progressText').textContent=result.visits+'/18';
+          document.getElementById('successMsg').textContent=result.alreadyVisited ? 'You already checked in today. Come back tomorrow!' : `Visit #${result.visits} recorded!`;
+          
+          if(result.alreadyVisited){
+            document.getElementById('rewardUnlocked').classList.remove('show');
+          } else if(result.newReward){
+            utils.confetti();
+            document.getElementById('rewardUnlocked').classList.add('show');
+            document.getElementById('unlockedRewardText').textContent=`You unlocked ${ICONS[result.newReward.m]} ${result.newReward.name}! Show this to claim at the counter.`;
+            document.getElementById('claimBtn').textContent='CLAIM AT COUNTER';
+            document.getElementById('claimBtn').onclick = async ()=>{ await claimReward(phone,result.newReward.m); document.getElementById('claimBtn').textContent='✓ CLAIMED'; };
+          } else {
+            document.getElementById('rewardUnlocked').classList.remove('show');
+          }
+          stopVideoStream();
+
+          const milestones=[3,6,9,12,15,18];
+          const nextM=milestones.find(m=>m>result.visits);
+          if(nextM){
+            document.getElementById('nextMilestoneText').textContent=`${nextM-result.visits} visit${nextM-result.visits>1?'s':''} away`;
+            document.getElementById('nextMilestoneDesc').textContent=`Next: ${REWARDS[nextM]}`;
+          } else {
+            document.getElementById('nextMilestoneText').textContent='Max level reached!';
+            document.getElementById('nextMilestoneDesc').textContent='You have unlocked every reward for this month.';
+          }
+
+          renderRewardMap(result.visits,result.claimed || []);
+          utils.screen('success');
+        }catch(e){
+          loadingSpinner.classList.remove('show');
+          utils.showAlert(checkinAlert,e.message || 'Unable to complete check-in.','error');
+        }
+      }
+      
+      function renderRewardMap(visits,claimed){
+        const mapEl = document.getElementById('rewardMap');
+        mapEl.innerHTML='';
+        const milestones=[3,6,9,12,15,18];
+        for(const m of milestones){
+          const done = visits >= m;
+          const isClaimed = claimed.includes(m);
+          const node = document.createElement('div');
+          node.className='reward-node '+(isClaimed?'claimed':done?'unlocked':'locked');
+          node.innerHTML = `
+            <div class="node-icon">${ICONS[m]}</div>
+            <div class="node-title">${REWARDS[m]}</div>
+            <div class="node-subtitle">Reach ${m} visits</div>
+            <div class="node-state">${isClaimed?'Claimed':done?'Unlocked':'Locked'}</div>
+          `;
+          mapEl.appendChild(node);
+        }
+      }
+      
+      scanBtn.addEventListener('click',startQRCodeScan);
+      cancelScanBtn.addEventListener('click',()=>{stopVideoStream();});
+      
       document.getElementById('continueBtn').addEventListener('click',async()=>{
-        const data=await fetchUserData(currentPhone);
+        const data = await fetchUserData(currentPhone);
         const name = currentName || await fetchCustomerName(currentPhone);
         if(data) renderDashboard(data.visits,data.claimed,data.dates,name);
         utils.screen('dash');
       });
       
-      document.getElementById('newCheckInBtn').addEventListener('click',()=>{phoneInput.value='';utils.screen('checkin')});
-      document.getElementById('checkInBtn').addEventListener('click',()=>{phoneInput.value='';utils.screen('checkin')});
+      document.getElementById('newCheckInBtn').addEventListener('click',()=>{phoneInput.value='';utils.screen('checkin');});
+      document.getElementById('checkInBtn').addEventListener('click',()=>{phoneInput.value='';utils.screen('checkin');});
     });
   </script>
 </body>
