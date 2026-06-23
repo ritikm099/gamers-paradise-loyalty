@@ -1,690 +1,2290 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Gamers Paradise Loyalty - Earn rewards with every visit!" />
-  <meta name="theme-color" content="#07070c" />
-  <title>Gamers Paradise — Loyalty Rewards</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-  <style>
-    :root{
-      --bg:#07070c;--surface:#0f0f1a;--card:#1a1f2e;--accent:#7b2cbf;--accent-2:#9d4edd;
-      --text:#f8fafc;--muted:#94a3b8;--radius:14px;--success:#00e676;--warn:#ffd600
-    }
-    *{box-sizing:border-box;margin:0;padding:0}
-    html,body{width:100%;height:100%}
-    body{font-family:Inter,system-ui,Arial;background:radial-gradient(1200px 600px at 10% 10%,rgba(123,44,191,0.12),transparent),linear-gradient(180deg,#05050a,#07070c);color:var(--text);overflow-x:hidden}
-    .page-shell{width:100%;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:24px 16px 48px}
-    .header-bar{width:100%;max-width:980px;display:flex;align-items:center;gap:14px;margin-bottom:28px}
-    .logo-sm{width:40px;height:40px;border-radius:8px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,0.5)}
-    .logo-sm img{width:100%;height:100%;object-fit:cover}
-    .brand-sm h2{font-size:18px;margin:0;font-weight:800}
-    .brand-sm p{font-size:11px;color:var(--muted);margin:2px 0 0;letter-spacing:0.08em;text-transform:uppercase}
-    
-    .screen{display:none;width:100%;max-width:560px;animation:fadeIn 0.4s ease}
-    .screen.active{display:block}
-    @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-    
-    .card{background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,0.06);padding:28px;border-radius:var(--radius)}
-    
-    /* Landing screen */
-    .landing-hero{text-align:center;margin-bottom:32px}
-    .landing-hero h1{font-family:Orbitron,system-ui;font-size:32px;margin-bottom:12px;letter-spacing:1px}
-    .landing-hero p{color:var(--muted);font-size:15px;line-height:1.8;margin:0}
-    .rewards-showcase{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:32px 0}
-    .reward-tile{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);padding:16px;border-radius:10px;text-align:center;transition:transform 0.2s,box-shadow 0.2s}
-    .reward-tile:hover{transform:translateY(-6px);box-shadow:0 12px 30px rgba(123,44,191,0.2)}
-    .reward-tile .icon{font-size:32px;margin-bottom:8px}
-    .reward-tile .visits{font-size:13px;color:var(--warn);font-weight:700;letter-spacing:0.08em}
-    .reward-tile .name{font-size:12px;color:var(--muted);margin-top:6px}
-    .how-it-works{background:rgba(255,255,255,0.02);border-left:3px solid var(--accent);padding:16px;margin:24px 0;border-radius:6px}
-    .how-it-works li{color:var(--muted);font-size:13px;margin:8px 0;margin-left:18px}
-    
-    .primary-btn{width:100%;padding:14px;border-radius:10px;border:none;background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#fff;font-weight:800;font-size:15px;cursor:pointer;box-shadow:0 10px 30px rgba(123,44,191,0.18);transition:transform 0.15s,box-shadow 0.15s}
-    .primary-btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 16px 40px rgba(123,44,191,0.25)}
-    .primary-btn:disabled{opacity:0.6;cursor:not-allowed}
-    .secondary-btn{background:transparent;border:1px solid rgba(255,255,255,0.1);color:var(--text);padding:10px 16px;border-radius:8px;font-size:13px;cursor:pointer;transition:border-color 0.2s}
-    .secondary-btn:hover{border-color:rgba(255,255,255,0.3)}
-    
-    input[type=tel]{width:100%;padding:14px;border-radius:10px;border:1px solid rgba(255,255,255,0.08);background:var(--surface);color:var(--text);font-size:15px}
-    input[type=tel]:focus{outline:none;border-color:var(--accent)}
-    
-    .alert{padding:12px 16px;border-radius:10px;font-size:13px;margin:12px 0;display:none}
-    .alert.show{display:block}
-    .alert-error{background:rgba(255,107,107,0.12);border:1px solid rgba(255,107,107,0.3);color:#ff6b6b}
-    .alert-success{background:rgba(0,230,118,0.12);border:1px solid rgba(0,230,118,0.3);color:var(--success)}
-    .alert-warn{background:rgba(255,214,0,0.12);border:1px solid rgba(255,214,0,0.3);color:var(--warn)}
-    
-    /* Check-in screen */
-    .location-request{margin:16px 0;padding:16px;background:rgba(123,44,191,0.08);border:1px solid rgba(123,44,191,0.2);border-radius:10px}
-    .location-request p{color:var(--muted);font-size:13px;margin:0 0 12px}
-    .location-btn{width:100%;padding:10px;margin:6px 0;background:rgba(123,44,191,0.2);border:1px solid var(--accent);color:var(--accent);border-radius:8px;cursor:pointer;font-size:13px;transition:background 0.2s}
-    .location-btn:hover{background:rgba(123,44,191,0.3)}
-    
-    /* Success screen */
-    .success-container{text-align:center}
-    .success-icon{font-size:64px;margin-bottom:16px;animation:bounce 0.6s ease}
-    @keyframes bounce{0%{transform:scale(0.8)}50%{transform:scale(1.1)}100%{transform:scale(1)}}
-    .success-title{font-size:24px;font-weight:800;margin-bottom:8px}
-    .success-subtitle{color:var(--muted);margin-bottom:24px}
-    .reward-unlocked{background:rgba(255,214,0,0.12);border:2px solid var(--warn);padding:14px;border-radius:10px;margin:20px 0;display:none}
-    .reward-unlocked.show{display:block;animation:slideUp 0.4s ease}
-    @keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-    .reward-unlocked strong{color:var(--warn)}
-    .reward-map{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding:18px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:16px;margin:18px 0}
-    .reward-node{background:linear-gradient(180deg,rgba(123,44,191,0.15),rgba(255,255,255,0.04));border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:14px;display:flex;flex-direction:column;align-items:center;gap:8px;position:relative;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,0.18)}
-    .reward-node::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at top,left,rgba(255,255,255,0.15),transparent 55%);opacity:0.5;pointer-events:none}
-    .reward-node.locked{opacity:0.55}
-    .reward-node.unlocked{border-color:rgba(255,214,0,0.6)}
-    .reward-node.claimed{border-color:rgba(0,230,118,0.6);box-shadow:0 0 0 1px rgba(0,230,118,0.12)}
-    .reward-node .node-icon{font-size:28px}
-    .reward-node .node-title{font-weight:800;font-size:14px}
-    .reward-node .node-subtitle{color:var(--muted);font-size:12px;text-align:center}
-    .reward-node .node-state{font-size:11px;font-weight:700;padding:4px 8px;border-radius:999px;letter-spacing:0.04em}
-    .reward-node.unlocked .node-state{background:rgba(255,214,0,0.18);color:var(--warn)}
-    .reward-node.claimed .node-state{background:rgba(0,230,118,0.18);color:var(--success)}
-    .reward-node.locked .node-state{background:rgba(255,255,255,0.08);color:var(--muted)}
-    .scanner-panel{margin-top:18px;padding:18px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:16px;display:flex;flex-direction:column;align-items:center;gap:14px}
-    .scanner-panel video{width:100%;border-radius:16px;aspect-ratio:4/3;object-fit:cover;border:1px solid rgba(255,255,255,0.1);box-shadow:0 18px 35px rgba(0,0,0,0.15)}
-    .scanner-panel p{color:var(--muted);font-size:13px;text-align:center;margin:0}
-    .progress-section{background:rgba(255,255,255,0.02);padding:16px;border-radius:10px;margin:16px 0;text-align:left}
-    .progress-section label{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:8px;text-transform:uppercase}
-    .progress-track{height:8px;background:rgba(255,255,255,0.05);border-radius:6px;overflow:hidden}
-    .progress-fill{height:100%;background:linear-gradient(90deg,#ffd86f,#ff6bcb);width:0;transition:width 0.8s ease}
-    
-    .next-reward-callout{background:linear-gradient(180deg,rgba(157,78,221,0.1),transparent);border:1px solid rgba(157,78,221,0.3);padding:14px;border-radius:10px;margin:16px 0}
-    .next-reward-callout strong{color:var(--accent-2);display:block;margin-bottom:4px}
-    .next-reward-callout small{color:var(--muted);font-size:13px}
-    
-    /* Dashboard screen */
-    .user-profile{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid rgba(255,255,255,0.05)}
-    .user-info h3{font-size:18px;margin:0 0 4px}
-    .user-info small{color:var(--muted);font-size:12px}
-    .visit-counter{text-align:right}
-    .visit-counter .num{font-size:28px;font-weight:900;color:var(--accent)}
-    .visit-counter small{color:var(--muted);font-size:12px}
-    
-    .history-section{margin-top:24px}
-    .history-section h4{font-size:12px;color:var(--muted);text-transform:uppercase;margin-bottom:12px}
-    .visit-log{display:grid;gap:8px;max-height:200px;overflow-y:auto}
-    .visit-item{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:rgba(255,255,255,0.02);border-radius:8px;font-size:13px}
-    .visit-item .date{color:var(--muted)}
-    .visit-item .badge{background:rgba(0,230,118,0.2);color:var(--success);padding:2px 8px;border-radius:4px;font-size:11px}
-    
-    .milestone-grid{display:grid;gap:10px;margin:16px 0}
-    .milestone-item{background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);padding:12px;border-radius:10px;display:flex;align-items:center;gap:12px;border:1px solid rgba(255,255,255,0.05)}
-    .milestone-item.unlocked{border-color:var(--warn);background:rgba(255,214,0,0.06)}
-    .milestone-item.claimed{border-color:var(--success);background:rgba(0,230,118,0.06)}
-    .milestone-icon{font-size:28px;min-width:40px}
-    .milestone-details{flex:1}
-    .milestone-details strong{display:block;font-size:14px}
-    .milestone-details small{color:var(--muted);font-size:12px}
-    .milestone-status{text-align:right;font-size:12px}
-    .milestone-status.locked{color:var(--muted)}
-    .milestone-status.unlocked{color:var(--warn);font-weight:700}
-    .milestone-status.claimed{color:var(--success);font-weight:700}
-    .claim-btn{background:var(--warn);color:#000;padding:6px 12px;border-radius:6px;border:none;font-weight:700;font-size:11px;cursor:pointer;transition:opacity 0.2s}
-    .claim-btn:hover{opacity:0.9}
-    
-    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);z-index:1000;align-items:center;justify-content:center}
-    .modal-overlay.show{display:flex}
-    .modal{background:var(--card);border:1px solid rgba(255,255,255,0.1);border-radius:var(--radius);padding:24px;max-width:480px;max-height:80vh;overflow-y:auto}
-    .modal h3{margin-bottom:16px}
-    .modal-close{float:right;background:none;border:none;color:var(--muted);cursor:pointer;font-size:20px}
-    
-    .loading-spinner{display:none;position:fixed;inset:0;align-items:center;justify-content:center;background:rgba(0,0,0,0.5);z-index:1100}
-    .loading-spinner.show{display:flex}
-    .spinner{width:40px;height:40px;border-radius:50%;border:3px solid rgba(255,255,255,0.1);border-top-color:var(--accent);animation:spin 1s linear infinite}
-    @keyframes spin{to{transform:rotate(360deg)}}
-    
-    .confetti{position:fixed;pointer-events:none;z-index:1500}
-    
-    @media(max-width:640px){
-      .page-shell{padding:16px}
-      .card{padding:20px}
-      .landing-hero h1{font-size:24px}
-      .rewards-showcase{gap:10px}
-      .reward-tile{padding:12px}
-      .reward-tile .icon{font-size:24px}
-      .milestone-grid{gap:8px}
-      .milestone-item{padding:10px;gap:10px}
-    }
-  </style>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Gamers Paradise Loyalty - Level up your visits!" />
+    <meta name="theme-color" content="#07070c" />
+    <title>Gamers Paradise — Loyalty Rewards</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* ═══════════════════════════════════════════════
+           ROOT & RESET
+           ═══════════════════════════════════════════════ */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        :root {
+            --bg: #06060b;
+            --surface: #0d0d18;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --card-border: rgba(255, 255, 255, 0.06);
+            --accent: #a855f7;
+            --accent-glow: rgba(168, 85, 247, 0.25);
+            --cyan: #22d3ee;
+            --gold: #fbbf24;
+            --pink: #ec4899;
+            --text: #f8fafc;
+            --muted: #94a3b8;
+            --radius: 16px;
+            --shadow: 0 8px 40px rgba(0, 0, 0, 0.6);
+            --success: #4ade80;
+            --warn: #fbbf24;
+            --transition: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        html,
+        body {
+            width: 100%;
+            min-height: 100%;
+            font-family: 'Inter', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+        }
+
+        /* ─── Particle background ─── */
+        #particles-canvas {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.5;
+        }
+
+        .page-shell {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 16px 16px 40px;
+            background: radial-gradient(ellipse at 10% 10%, rgba(168, 85, 247, 0.10), transparent 50%),
+                radial-gradient(ellipse at 90% 90%, rgba(34, 211, 238, 0.06), transparent 50%);
+        }
+
+        /* ─── Scrollbar ─── */
+        ::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.02);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 4px;
+        }
+
+        /* ─── Screens ─── */
+        .screen {
+            display: none;
+            width: 100%;
+            max-width: 560px;
+            animation: fadeUp 0.5s ease;
+        }
+        .screen.active {
+            display: block;
+        }
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(24px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.005));
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius);
+            padding: 24px 20px;
+            box-shadow: var(--shadow), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+            position: relative;
+            overflow: hidden;
+        }
+        .card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: var(--radius);
+            padding: 1px;
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.10), transparent 50%, rgba(34, 211, 238, 0.06));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+
+        /* ─── HEADER ─── */
+        .header-bar {
+            width: 100%;
+            max-width: 980px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding: 0 4px;
+        }
+        .logo-sm {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--accent), var(--pink));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Orbitron', system-ui;
+            font-weight: 900;
+            font-size: 20px;
+            color: #fff;
+            flex-shrink: 0;
+            box-shadow: 0 0 30px rgba(168, 85, 247, 0.25);
+        }
+        .brand-sm h2 {
+            font-size: 17px;
+            margin: 0;
+            font-weight: 800;
+            letter-spacing: -0.2px;
+            background: linear-gradient(135deg, #fff, var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .brand-sm p {
+            font-size: 10px;
+            color: var(--muted);
+            margin: 1px 0 0;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+        .header-actions {
+            margin-left: auto;
+            display: flex;
+            gap: 6px;
+        }
+
+        /* ─── BUTTONS ─── */
+        .primary-btn {
+            width: 100%;
+            padding: 15px 20px;
+            border-radius: 12px;
+            border: none;
+            background: linear-gradient(135deg, var(--accent), #7c3aed);
+            color: #fff;
+            font-weight: 800;
+            font-size: 15px;
+            cursor: pointer;
+            box-shadow: 0 0 30px rgba(168, 85, 247, 0.20), 0 8px 24px rgba(0, 0, 0, 0.3);
+            transition: transform 0.2s, box-shadow 0.3s;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .primary-btn:hover:not(:disabled) {
+            transform: translateY(-2px) scale(1.01);
+            box-shadow: 0 0 50px rgba(168, 85, 247, 0.35), 0 12px 32px rgba(0, 0, 0, 0.4);
+        }
+        .primary-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .primary-btn .pulse-ring {
+            position: absolute;
+            inset: -2px;
+            border-radius: 14px;
+            border: 2px solid rgba(168, 85, 247, 0.3);
+            animation: pulse-ring 2s ease-in-out infinite;
+            pointer-events: none;
+        }
+        @keyframes pulse-ring {
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 0.5;
+            }
+            50% {
+                transform: scale(1.04);
+                opacity: 0;
+            }
+        }
+
+        .secondary-btn {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: var(--text);
+            padding: 10px 18px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: border-color 0.2s, background 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            justify-content: center;
+        }
+        .secondary-btn:hover {
+            border-color: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.07);
+        }
+
+        .ghost-btn {
+            background: transparent;
+            border: none;
+            color: var(--muted);
+            padding: 6px 12px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .ghost-btn:hover {
+            color: var(--text);
+        }
+
+        .claim-btn {
+            background: linear-gradient(135deg, var(--gold), #f59e0b);
+            color: #000;
+            padding: 8px 20px;
+            border-radius: 10px;
+            border: none;
+            font-weight: 800;
+            font-size: 12px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 0 20px rgba(251, 191, 36, 0.2);
+        }
+        .claim-btn:hover {
+            transform: scale(1.04);
+            box-shadow: 0 0 30px rgba(251, 191, 36, 0.35);
+        }
+        .claim-btn.claimed {
+            background: var(--success);
+            color: #000;
+            box-shadow: 0 0 20px rgba(74, 222, 128, 0.2);
+        }
+
+        /* ─── INPUT ─── */
+        input[type="tel"],
+        input[type="text"],
+        input[type="number"] {
+            width: 100%;
+            padding: 14px 16px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(0, 0, 0, 0.3);
+            color: var(--text);
+            font-size: 16px;
+            transition: border-color 0.25s, box-shadow 0.25s;
+        }
+        input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.12);
+        }
+        input::placeholder {
+            color: var(--muted);
+            opacity: 0.5;
+        }
+
+        /* ─── ALERTS ─── */
+        .alert {
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-size: 13px;
+            margin: 10px 0;
+            display: none;
+        }
+        .alert.show {
+            display: block;
+            animation: fadeUp 0.3s ease;
+        }
+        .alert-error {
+            background: rgba(239, 68, 68, 0.12);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            color: #f87171;
+        }
+        .alert-success {
+            background: rgba(74, 222, 128, 0.10);
+            border: 1px solid rgba(74, 222, 128, 0.15);
+            color: var(--success);
+        }
+        .alert-warn {
+            background: rgba(251, 191, 36, 0.10);
+            border: 1px solid rgba(251, 191, 36, 0.15);
+            color: var(--gold);
+        }
+        .alert-info {
+            background: rgba(168, 85, 247, 0.10);
+            border: 1px solid rgba(168, 85, 247, 0.15);
+            color: var(--accent);
+        }
+
+        /* ═══════════════════════════════════════════════
+           LANDING
+           ═══════════════════════════════════════════════ */
+        .landing-hero {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        .landing-hero h1 {
+            font-family: 'Orbitron', system-ui;
+            font-size: 28px;
+            font-weight: 900;
+            letter-spacing: 0.5px;
+            background: linear-gradient(135deg, #fff 30%, var(--accent), var(--cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+        .landing-hero p {
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.7;
+            max-width: 380px;
+            margin: 0 auto;
+        }
+
+        .landing-rewards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 20px 0 18px;
+        }
+        .landing-reward-tile {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 14px 6px;
+            border-radius: 12px;
+            text-align: center;
+            transition: transform 0.25s, box-shadow 0.25s;
+        }
+        .landing-reward-tile:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(168, 85, 247, 0.10);
+        }
+        .landing-reward-tile .icon {
+            font-size: 28px;
+            margin-bottom: 2px;
+        }
+        .landing-reward-tile .visits {
+            font-size: 11px;
+            color: var(--gold);
+            font-weight: 700;
+            letter-spacing: 0.06em;
+        }
+        .landing-reward-tile .name {
+            font-size: 11px;
+            color: var(--muted);
+            margin-top: 2px;
+        }
+
+        .landing-cta {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        /* ═══════════════════════════════════════════════
+           PHONE ENTRY
+           ═══════════════════════════════════════════════ */
+        .phone-entry-title {
+            font-size: 22px;
+            font-weight: 800;
+            margin-bottom: 2px;
+        }
+        .phone-entry-sub {
+            color: var(--muted);
+            font-size: 13px;
+            margin-bottom: 16px;
+        }
+        .phone-entry-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 14px;
+        }
+
+        /* ─── Scanner ─── */
+        .scanner-panel {
+            margin-top: 16px;
+            padding: 16px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 14px;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+        .scanner-panel.show {
+            display: flex;
+        }
+        .scanner-panel video {
+            width: 100%;
+            border-radius: 12px;
+            aspect-ratio: 4/3;
+            object-fit: cover;
+            background: #000;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .scanner-panel .scan-status {
+            color: var(--muted);
+            font-size: 13px;
+            text-align: center;
+            margin: 0;
+        }
+
+        /* ═══════════════════════════════════════════════
+           DASHBOARD
+           ═══════════════════════════════════════════════ */
+
+        /* ─── Hero Card ─── */
+        .hero-card {
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.08), rgba(34, 211, 238, 0.04));
+            border: 1px solid rgba(168, 85, 247, 0.12);
+            border-radius: var(--radius);
+            padding: 20px 18px;
+            margin-bottom: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-card::after {
+            content: '';
+            position: absolute;
+            top: -60%;
+            right: -20%;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(168, 85, 247, 0.08), transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        .hero-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            position: relative;
+            z-index: 1;
+        }
+        .hero-top .greeting {
+            font-size: 22px;
+            font-weight: 800;
+        }
+        .hero-top .greeting small {
+            font-size: 14px;
+            font-weight: 400;
+            color: var(--muted);
+            display: block;
+            margin-top: 2px;
+        }
+        .hero-badges {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .hero-badge {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .hero-badge.streak {
+            border-color: rgba(251, 191, 36, 0.2);
+            color: var(--gold);
+        }
+        .hero-badge.rank {
+            border-color: rgba(168, 85, 247, 0.2);
+            color: var(--accent);
+        }
+
+        .hero-next {
+            margin-top: 14px;
+            padding: 14px 16px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            position: relative;
+            z-index: 1;
+        }
+        .hero-next .next-icon {
+            font-size: 32px;
+            flex-shrink: 0;
+        }
+        .hero-next .next-info {
+            flex: 1;
+        }
+        .hero-next .next-info .label {
+            font-size: 10px;
+            text-transform: uppercase;
+            color: var(--muted);
+            letter-spacing: 0.08em;
+        }
+        .hero-next .next-info .name {
+            font-size: 18px;
+            font-weight: 800;
+            margin: 2px 0;
+        }
+        .hero-next .next-info .remaining {
+            font-size: 13px;
+            color: var(--gold);
+            font-weight: 600;
+        }
+        .hero-next .next-progress {
+            flex: 0 0 80px;
+            text-align: right;
+        }
+        .hero-next .next-progress .num {
+            font-size: 20px;
+            font-weight: 900;
+            color: var(--accent);
+        }
+        .hero-next .next-progress small {
+            color: var(--muted);
+            font-size: 10px;
+            display: block;
+        }
+
+        /* ─── XP Bar ─── */
+        .xp-bar-section {
+            margin: 12px 0 16px;
+            padding: 14px 16px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+        .xp-bar-section .xp-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            text-transform: uppercase;
+            color: var(--muted);
+            letter-spacing: 0.06em;
+            margin-bottom: 4px;
+        }
+        .xp-bar-section .xp-header span:last-child {
+            color: var(--text);
+            font-weight: 700;
+        }
+        .xp-track {
+            height: 10px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+        .xp-track .xp-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), var(--cyan), var(--accent));
+            background-size: 200% 100%;
+            width: 0%;
+            border-radius: 8px;
+            transition: width 0.8s ease;
+            animation: xp-shimmer 3s ease-in-out infinite;
+            box-shadow: 0 0 20px rgba(168, 85, 247, 0.2);
+        }
+        @keyframes xp-shimmer {
+            0%,
+            100% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+        }
+        .xp-bar-section .xp-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--muted);
+            margin-top: 4px;
+        }
+        .xp-bar-section .xp-label strong {
+            color: var(--text);
+        }
+
+        /* ─── Reward Journey Timeline ─── */
+        .journey-section {
+            margin: 14px 0 16px;
+        }
+        .journey-section .journey-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            color: var(--muted);
+            letter-spacing: 0.08em;
+            margin-bottom: 8px;
+        }
+        .journey-track {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            padding: 4px 0;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        .journey-node {
+            flex: 0 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 48px;
+            padding: 6px 4px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            position: relative;
+            cursor: default;
+        }
+        .journey-node .j-icon {
+            font-size: 22px;
+            transition: transform 0.3s ease;
+        }
+        .journey-node .j-label {
+            font-size: 8px;
+            color: var(--muted);
+            margin-top: 2px;
+            font-weight: 600;
+        }
+        .journey-node .j-connector {
+            position: absolute;
+            right: -6px;
+            top: 35%;
+            width: 12px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.06);
+        }
+        .journey-node:last-child .j-connector {
+            display: none;
+        }
+        .journey-node.locked {
+            opacity: 0.4;
+        }
+        .journey-node.unlocked .j-icon {
+            transform: scale(1.1);
+            filter: drop-shadow(0 0 12px rgba(168, 85, 247, 0.3));
+        }
+        .journey-node.unlocked .j-connector {
+            background: linear-gradient(90deg, var(--accent), var(--cyan));
+        }
+        .journey-node.claimed .j-icon {
+            filter: drop-shadow(0 0 16px rgba(251, 191, 36, 0.4));
+        }
+        .journey-node.claimed .j-connector {
+            background: var(--gold);
+        }
+        .journey-node .j-status {
+            font-size: 7px;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-top: 1px;
+            padding: 1px 6px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--muted);
+        }
+        .journey-node.unlocked .j-status {
+            background: rgba(168, 85, 247, 0.12);
+            color: var(--accent);
+        }
+        .journey-node.claimed .j-status {
+            background: rgba(251, 191, 36, 0.12);
+            color: var(--gold);
+        }
+
+        /* ─── Reward Cards (grid) ─── */
+        .reward-grid {
+            display: grid;
+            gap: 10px;
+            margin: 12px 0 16px;
+        }
+        .reward-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 14px;
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .reward-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 14px;
+            padding: 1px;
+            background: linear-gradient(135deg, transparent, transparent 50%, transparent);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+            transition: background 0.4s ease;
+        }
+        .reward-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+        }
+        .reward-card.unlocked {
+            border-color: rgba(168, 85, 247, 0.15);
+        }
+        .reward-card.unlocked::before {
+            background: linear-gradient(135deg, var(--accent), transparent 60%);
+        }
+        .reward-card.claimed {
+            border-color: rgba(251, 191, 36, 0.15);
+        }
+        .reward-card.claimed::before {
+            background: linear-gradient(135deg, var(--gold), transparent 60%);
+        }
+        .reward-card .r-icon {
+            font-size: 32px;
+            flex-shrink: 0;
+            width: 48px;
+            text-align: center;
+        }
+        .reward-card .r-info {
+            flex: 1;
+        }
+        .reward-card .r-info .r-name {
+            font-size: 15px;
+            font-weight: 700;
+        }
+        .reward-card .r-info .r-desc {
+            font-size: 11px;
+            color: var(--muted);
+        }
+        .reward-card .r-info .r-progress {
+            margin-top: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .reward-card .r-info .r-progress .mini-bar {
+            flex: 1;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .reward-card .r-info .r-progress .mini-bar .fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.6s ease;
+        }
+        .reward-card .r-info .r-progress .r-count {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--muted);
+            white-space: nowrap;
+        }
+        .reward-card .r-status {
+            flex-shrink: 0;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 20px;
+            text-transform: uppercase;
+        }
+        .reward-card .r-status.locked {
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--muted);
+        }
+        .reward-card .r-status.unlocked {
+            background: rgba(168, 85, 247, 0.12);
+            color: var(--accent);
+        }
+        .reward-card .r-status.claimed {
+            background: rgba(251, 191, 36, 0.12);
+            color: var(--gold);
+        }
+
+        /* ─── Rarity colors ─── */
+        .rarity-bronze .r-icon {
+            filter: drop-shadow(0 0 12px rgba(205, 127, 50, 0.2));
+        }
+        .rarity-bronze.unlocked {
+            border-color: rgba(205, 127, 50, 0.2);
+        }
+        .rarity-orange .r-icon {
+            filter: drop-shadow(0 0 12px rgba(251, 146, 60, 0.2));
+        }
+        .rarity-orange.unlocked {
+            border-color: rgba(251, 146, 60, 0.2);
+        }
+        .rarity-purple .r-icon {
+            filter: drop-shadow(0 0 16px rgba(168, 85, 247, 0.25));
+        }
+        .rarity-purple.unlocked {
+            border-color: rgba(168, 85, 247, 0.2);
+        }
+        .rarity-cyan .r-icon {
+            filter: drop-shadow(0 0 16px rgba(34, 211, 238, 0.25));
+        }
+        .rarity-cyan.unlocked {
+            border-color: rgba(34, 211, 238, 0.2);
+        }
+        .rarity-gold .r-icon {
+            filter: drop-shadow(0 0 20px rgba(251, 191, 36, 0.3));
+        }
+        .rarity-gold.unlocked {
+            border-color: rgba(251, 191, 36, 0.2);
+        }
+
+        /* ─── Visit Log ─── */
+        .history-section {
+            margin-top: 16px;
+        }
+        .history-section h4 {
+            font-size: 10px;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 8px;
+        }
+        .visit-log {
+            display: grid;
+            gap: 4px;
+            max-height: 140px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+        .visit-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 12px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 8px;
+            font-size: 12px;
+        }
+        .visit-item .date {
+            color: var(--muted);
+        }
+        .visit-item .badge {
+            background: rgba(74, 222, 128, 0.10);
+            color: var(--success);
+            padding: 2px 10px;
+            border-radius: 4px;
+            font-size: 9px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        /* ═══════════════════════════════════════════════
+           SUCCESS SCREEN
+           ═══════════════════════════════════════════════ */
+        .success-container {
+            text-align: center;
+        }
+        .success-icon {
+            font-size: 56px;
+            margin-bottom: 8px;
+            animation: bounce 0.6s ease;
+        }
+        @keyframes bounce {
+            0% {
+                transform: scale(0.6);
+            }
+            50% {
+                transform: scale(1.15);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        .success-title {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 2px;
+        }
+        .success-subtitle {
+            color: var(--muted);
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+        .reward-unlocked {
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.10), rgba(251, 191, 36, 0.02));
+            border: 2px solid var(--gold);
+            padding: 18px;
+            border-radius: 14px;
+            margin: 14px 0;
+            display: none;
+            animation: slideUp 0.5s ease;
+        }
+        .reward-unlocked.show {
+            display: block;
+        }
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .reward-unlocked strong {
+            color: var(--gold);
+            display: block;
+            font-size: 18px;
+        }
+        .reward-unlocked p {
+            font-size: 14px;
+            margin: 4px 0 0;
+        }
+
+        .success-visits {
+            margin: 12px 0;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 12px;
+        }
+        .success-visits .num {
+            font-size: 28px;
+            font-weight: 900;
+            color: var(--accent);
+        }
+        .success-visits small {
+            color: var(--muted);
+            font-size: 12px;
+            display: block;
+        }
+
+        /* ═══════════════════════════════════════════════
+           ADMIN PORTAL
+           ═══════════════════════════════════════════════ */
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+        .admin-header h2 {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--gold);
+        }
+        .admin-header small {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .admin-reward-item {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 12px;
+            padding: 10px 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 6px;
+            flex-wrap: wrap;
+        }
+        .admin-reward-item .r-icon {
+            font-size: 22px;
+            min-width: 32px;
+            text-align: center;
+        }
+        .admin-reward-item .r-fields {
+            flex: 1;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            align-items: center;
+        }
+        .admin-reward-item .r-fields input {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 8px;
+            padding: 6px 10px;
+            color: var(--text);
+            font-size: 13px;
+            flex: 1 1 80px;
+            min-width: 60px;
+        }
+        .admin-reward-item .r-fields input:focus {
+            border-color: var(--accent);
+        }
+        .admin-reward-item .r-fields .r-visits-input {
+            flex: 0 0 60px;
+            max-width: 70px;
+            text-align: center;
+        }
+        .admin-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+        .admin-actions .primary-btn {
+            flex: 1;
+            min-width: 120px;
+        }
+        .admin-actions .secondary-btn {
+            flex: 0 1 auto;
+        }
+        .admin-save-status {
+            font-size: 13px;
+            color: var(--success);
+            margin-top: 10px;
+            display: none;
+        }
+        .admin-save-status.show {
+            display: block;
+            animation: fadeUp 0.3s ease;
+        }
+
+        /* ═══════════════════════════════════════════════
+           MODAL
+           ═══════════════════════════════════════════════ */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .modal-overlay.show {
+            display: flex;
+        }
+        .modal {
+            background: var(--surface);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: var(--radius);
+            padding: 24px;
+            max-width: 480px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow);
+        }
+        .modal h3 {
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+        .modal-close {
+            float: right;
+            background: none;
+            border: none;
+            color: var(--muted);
+            cursor: pointer;
+            font-size: 22px;
+            line-height: 1;
+        }
+        .modal-close:hover {
+            color: var(--text);
+        }
+        .modal p {
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        /* ═══════════════════════════════════════════════
+           LOADING
+           ═══════════════════════════════════════════════ */
+        .loading-spinner {
+            display: none;
+            position: fixed;
+            inset: 0;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1100;
+        }
+        .loading-spinner.show {
+            display: flex;
+        }
+        .spinner {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 3px solid rgba(255, 255, 255, 0.04);
+            border-top-color: var(--accent);
+            animation: spin 0.9s linear infinite;
+        }
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ─── Confetti ─── */
+        .confetti {
+            position: fixed;
+            pointer-events: none;
+            z-index: 1500;
+            border-radius: 2px;
+        }
+
+        /* ═══════════════════════════════════════════════
+           RESPONSIVE
+           ═══════════════════════════════════════════════ */
+        @media(max-width:640px) {
+            .page-shell {
+                padding: 12px 12px 32px;
+            }
+            .card {
+                padding: 18px 14px;
+            }
+            .landing-hero h1 {
+                font-size: 22px;
+            }
+            .landing-rewards {
+                gap: 6px;
+            }
+            .landing-reward-tile {
+                padding: 10px 4px;
+            }
+            .landing-reward-tile .icon {
+                font-size: 22px;
+            }
+            .hero-top .greeting {
+                font-size: 18px;
+            }
+            .hero-next .next-info .name {
+                font-size: 15px;
+            }
+            .hero-next .next-icon {
+                font-size: 26px;
+            }
+            .hero-badges .hero-badge {
+                font-size: 10px;
+                padding: 2px 10px;
+            }
+            .reward-card {
+                padding: 12px 14px;
+                gap: 10px;
+            }
+            .reward-card .r-icon {
+                font-size: 26px;
+                width: 40px;
+            }
+            .reward-card .r-info .r-name {
+                font-size: 13px;
+            }
+            .journey-node {
+                min-width: 38px;
+                padding: 4px 2px;
+            }
+            .journey-node .j-icon {
+                font-size: 18px;
+            }
+            .admin-reward-item .r-fields {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .admin-reward-item .r-fields input {
+                flex: 1 1 auto;
+            }
+            .admin-reward-item .r-fields .r-visits-input {
+                flex: 1 1 auto;
+                max-width: none;
+            }
+            .header-bar {
+                margin-bottom: 14px;
+            }
+            .phone-entry-title {
+                font-size: 18px;
+            }
+            .success-title {
+                font-size: 20px;
+            }
+        }
+        @media(max-width:400px) {
+            .hero-next {
+                flex-wrap: wrap;
+            }
+            .hero-next .next-progress {
+                flex: 1 1 100%;
+                text-align: left;
+            }
+            .reward-card {
+                flex-wrap: wrap;
+            }
+            .reward-card .r-status {
+                flex: 1 1 100%;
+                text-align: center;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div class="page-shell">
-    <!-- Header -->
-    <div class="header-bar">
-      <div class="logo-sm"><img src='logo.png' viewBox='0 0 100 100'%3E%3Crect fill='%237b2cbf' width='100' height='100'/%3E%3Ctext x='50' y='60' font-size='50' fill='white' text-anchor='middle' font-weight='bold'%3EGP%3C/text%3E%3C/svg%3E" alt="GP"></div>
-      <div class="brand-sm">
-        <h2>Gamers Paradise</h2>
-        <p>Loyalty Program</p>
-      </div>
-      <div style="margin-left:auto">
-        <button class="secondary-btn" id="termsBtn">Terms</button>
-      </div>
+
+    <!-- ═══ PARTICLES ═══ -->
+    <canvas id="particles-canvas"></canvas>
+
+    <div class="page-shell">
+
+        <!-- ═══ HEADER ═══ -->
+        <div class="header-bar">
+            <div class="logo-sm">GP</div>
+            <div class="brand-sm">
+                <h2>Gamers Paradise</h2>
+                <p>Loyalty Program</p>
+            </div>
+            <div class="header-actions">
+                <button class="ghost-btn" id="termsBtn">Terms</button>
+            </div>
+        </div>
+
+        <!-- ═══ LANDING ═══ -->
+        <div id="landingScreen" class="screen active card">
+            <div class="landing-hero">
+                <h1>Level Up Your Visits</h1>
+                <p>Track your gaming sessions, earn stamps, and unlock epic rewards every month.</p>
+            </div>
+            <div class="landing-rewards" id="landingRewards">
+                <div class="landing-reward-tile"><div class="icon">☕</div><div class="visits">3 visits</div><div class="name">Cold Coffee</div></div>
+                <div class="landing-reward-tile"><div class="icon">🍟</div><div class="visits">6 visits</div><div class="name">French Fries</div></div>
+                <div class="landing-reward-tile"><div class="icon">🎮</div><div class="visits">9 visits</div><div class="name">1-Hour Pass</div></div>
+            </div>
+            <div class="landing-cta">
+                <button class="primary-btn" id="viewProgressBtn"><span>📊</span> View My Progress</button>
+                <button class="secondary-btn" id="checkInLandingBtn"><span>📸</span> Check In Today</button>
+            </div>
+            <p style="color:var(--muted);font-size:10px;text-align:center;margin-top:14px;">Your phone number is used only to track visits. No data is shared.</p>
+        </div>
+
+        <!-- ═══ PHONE ENTRY ═══ -->
+        <div id="phoneEntryScreen" class="screen card">
+            <h2 class="phone-entry-title" id="phoneEntryTitle">Enter Your Phone</h2>
+            <p class="phone-entry-sub" id="phoneEntrySub">We'll look up your progress or prepare your check-in.</p>
+            <input id="phoneInput" type="tel" placeholder="10-digit mobile number" maxlength="10" autocomplete="tel">
+            <div id="phoneStatus" style="color:var(--muted);font-size:12px;margin-top:6px;">Enter your number to continue.</div>
+            <div id="phoneAlert" class="alert"></div>
+            <div class="phone-entry-actions" id="phoneActions">
+                <button class="primary-btn" id="phoneViewBtn"><span>📊</span> View Progress</button>
+                <button class="secondary-btn" id="phoneCheckinBtn"><span>📸</span> Check In (Scan QR)</button>
+                <button class="ghost-btn" id="phoneBackBtn" style="margin-top:4px;">← Back</button>
+            </div>
+            <!-- Scanner -->
+            <div id="scannerPanel" class="scanner-panel">
+                <video id="qrVideo" playsinline muted></video>
+                <canvas id="qrCanvas" hidden></canvas>
+                <p class="scan-status" id="scanStatus">Point your camera at the lounge QR code.</p>
+                <button class="secondary-btn" id="cancelScanBtn" style="width:100%;">Cancel</button>
+            </div>
+        </div>
+
+        <!-- ═══ DASHBOARD ═══ -->
+        <div id="dashScreen" class="screen card">
+            <!-- Hero -->
+            <div class="hero-card" id="heroCard">
+                <div class="hero-top">
+                    <div class="greeting" id="dashGreeting">Hi Guest 👋 <small id="dashMonth"></small></div>
+                    <div class="hero-badges">
+                        <span class="hero-badge streak" id="dashStreak">🔥 0d</span>
+                        <span class="hero-badge rank" id="dashRank">🏆 Bronze</span>
+                    </div>
+                </div>
+                <div class="hero-next" id="dashNextReward">
+                    <div class="next-icon" id="dashNextIcon">☕</div>
+                    <div class="next-info">
+                        <div class="label">🎯 Next Reward</div>
+                        <div class="name" id="dashNextName">Cold Coffee</div>
+                        <div class="remaining" id="dashNextRemaining">2 visits remaining</div>
+                    </div>
+                    <div class="next-progress">
+                        <div class="num" id="dashNextProgress">1</div>
+                        <small>/ 3</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- XP Bar -->
+            <div class="xp-bar-section">
+                <div class="xp-header">
+                    <span>⚡ Progress</span>
+                    <span id="dashXpLabel">0 / 18</span>
+                </div>
+                <div class="xp-track">
+                    <div class="xp-fill" id="dashXpFill" style="width:0%;"></div>
+                </div>
+                <div class="xp-label">
+                    <span>LEVEL <strong id="dashLevel">1</strong></span>
+                    <span id="dashXpRemain">18 visits to max</span>
+                </div>
+            </div>
+
+            <!-- Journey Timeline -->
+            <div class="journey-section">
+                <div class="journey-label">🎮 Reward Journey</div>
+                <div class="journey-track" id="journeyTrack"></div>
+            </div>
+
+            <!-- Reward Cards -->
+            <h4 style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin:4px 0 10px;">📦 Available Rewards</h4>
+            <div class="reward-grid" id="dashRewardGrid"></div>
+
+            <!-- Visit Log -->
+            <div class="history-section">
+                <h4>📋 Recent Activity</h4>
+                <div class="visit-log" id="visitLog"></div>
+            </div>
+
+            <button class="primary-btn" id="dashCheckInBtn" style="margin-top:16px;"><span>📸</span> Check In Today</button>
+            <button class="ghost-btn" id="dashBackBtn" style="margin-top:6px;width:100%;text-align:center;">← Back</button>
+        </div>
+
+        <!-- ═══ SUCCESS ═══ -->
+        <div id="successScreen" class="screen card">
+            <div class="success-container">
+                <div class="success-icon">✅</div>
+                <h2 class="success-title">Check-In Confirmed!</h2>
+                <p class="success-subtitle" id="successGreeting"></p>
+                <p class="success-subtitle" id="successMsg" style="font-size:14px;"></p>
+                <div id="rewardUnlocked" class="reward-unlocked">
+                    <strong>🎉 Reward Unlocked!</strong>
+                    <p id="unlockedRewardText"></p>
+                    <button id="claimBtn" class="claim-btn" style="width:100%;margin-top:10px;padding:10px;font-size:13px;">🎯 CLAIM AT COUNTER</button>
+                </div>
+                <div class="success-visits">
+                    <div class="num" id="successVisits">0</div>
+                    <small>visits this month</small>
+                </div>
+                <div class="xp-bar-section" style="margin:8px 0 12px;">
+                    <div class="xp-header"><span>⚡ Progress</span><span id="successProgressText">0 / 18</span></div>
+                    <div class="xp-track"><div class="xp-fill" id="successProgBar" style="width:0%;"></div></div>
+                </div>
+                <div id="successNextReward" style="background:rgba(255,255,255,0.02);padding:12px;border-radius:10px;margin:10px 0;">
+                    <strong id="successNextText" style="font-size:13px;display:block;"></strong>
+                    <small id="successNextDesc" style="color:var(--muted);font-size:12px;"></small>
+                </div>
+                <button class="primary-btn" id="successDashboardBtn" style="margin-top:12px;"><span>📊</span> Go to Dashboard</button>
+                <button class="secondary-btn" id="successNewCheckinBtn" style="width:100%;margin-top:8px;"><span>📸</span> New Check-In</button>
+            </div>
+        </div>
+
+        <!-- ═══ ADMIN PORTAL ═══ -->
+        <div id="adminScreen" class="screen card">
+            <div class="admin-header">
+                <div>
+                    <h2>⚙️ Admin Portal</h2>
+                    <small>Manage rewards for <strong id="adminMonthLabel">next month</strong></small>
+                </div>
+                <button class="ghost-btn" id="adminLogoutBtn" style="color:var(--muted);">← Exit</button>
+            </div>
+            <p style="color:var(--muted);font-size:12px;margin-bottom:12px;">Edit the rewards that will be active next month. Changes saved to cloud.</p>
+            <div id="adminRewardsList"></div>
+            <div class="admin-actions">
+                <button class="primary-btn" id="adminSaveBtn"><span>💾</span> Save Changes</button>
+                <button class="secondary-btn" id="adminCheckinBtn"><span>📸</span> Check In</button>
+            </div>
+            <div id="adminSaveStatus" class="admin-save-status">✓ Rewards saved successfully!</div>
+            <div style="margin-top:14px;padding:12px;background:rgba(251,191,36,0.04);border:1px solid rgba(251,191,36,0.08);border-radius:10px;">
+                <p style="color:var(--muted);font-size:10px;margin:0;text-align:center;">⚡ Only <strong style="color:var(--gold);">8446186106</strong> has admin access.</p>
+            </div>
+        </div>
     </div>
 
-    <!-- LANDING SCREEN -->
-    <div id="landingScreen" class="screen active card">
-      <div class="landing-hero">
-        <h1>Level Up Your Visits</h1>
-        <p>Welcome to Gamers Paradise Loyalty! Track your visits, earn stamps, and unlock amazing rewards with every game session.</p>
-      </div>
-      
-      <div>
-        <p style="color:var(--muted);font-size:13px;margin-bottom:12px;text-transform:uppercase;letter-spacing:0.08em">This Month's Rewards</p>
-        <div class="rewards-showcase">
-          <div class="reward-tile">
-            <div class="icon">☕</div>
-            <div class="visits">3 visits</div>
-            <div class="name">Cold Coffee</div>
-          </div>
-          <div class="reward-tile">
-            <div class="icon">🍟</div>
-            <div class="visits">6 visits</div>
-            <div class="name">French Fries</div>
-          </div>
-          <div class="reward-tile">
-            <div class="icon">🎮</div>
-            <div class="visits">9 visits</div>
-            <div class="name">1-Hour Pass</div>
-          </div>
+    <!-- ═══ TERMS MODAL ═══ -->
+    <div id="termsModal" class="modal-overlay">
+        <div class="modal">
+            <button class="modal-close" id="closeTerms">✕</button>
+            <h3>Terms & Privacy</h3>
+            <p><strong>Your Data:</strong> We collect your phone number to track visits and rewards. Stored securely on Firebase, never shared.</p>
+            <p style="margin-top:10px;"><strong>Camera:</strong> Used only to scan the lounge QR at check-in. Not stored.</p>
+            <p style="margin-top:10px;"><strong>Rewards:</strong> Reset monthly and are non-transferable. By checking in, you agree to these terms.</p>
+            <button class="primary-btn" id="acceptTerms" style="margin-top:14px;">I Understand</button>
         </div>
-      </div>
-
-      <div class="how-it-works">
-        <strong style="display:block;margin-bottom:10px">How It Works</strong>
-        <ul style="list-style:none">
-          <li><strong>✓ Daily Check-in:</strong> Tap the button to check in each day you visit</li>
-          <li><strong>✓ Earn Stamps:</strong> Each visit counts toward your reward milestones</li>
-          <li><strong>✓ Unlock Rewards:</strong> Reach 3, 6, 9+ visits to claim amazing rewards</li>
-          <li><strong>✓ Resets Monthly:</strong> Progress resets on the 1st of every month</li>
-        </ul>
-      </div>
-
-      <button class="primary-btn" id="startBtn">Start Check-In</button>
-      <p style="color:var(--muted);font-size:12px;text-align:center;margin-top:16px">We use your phone number only to track your visits. No data is shared.</p>
     </div>
 
-    <!-- CHECK-IN SCREEN -->
-    <div id="checkinScreen" class="screen card">
-      <h2 style="margin-bottom:8px">Ready to Check In?</h2>
-      <p style="color:var(--muted);font-size:13px;margin-bottom:18px">Enter your mobile number to record your visit today.</p>
-      
-      <input id="phoneInput" type="tel" placeholder="10-digit number" maxlength="10" autocomplete="tel">
-      <div id="cameraAlert" class="alert alert-warn" style="margin-top:12px">
-        <strong>📸 QR Check-In:</strong> Scan the lounge QR code using your camera to punch your visit.
-      </div>
-
-      <button class="primary-btn" id="scanBtn" style="margin-top:16px">Scan Lounge QR</button>
-      
-      <div id="scannerPanel" class="scanner-panel" style="display:none">
-        <video id="qrVideo" playsinline muted></video>
-        <canvas id="qrCanvas" hidden></canvas>
-        <p id="scanStatus">Point your camera at the QR code shown by staff.</p>
-        <button class="secondary-btn" id="cancelScanBtn" style="width:100%;margin-top:12px">Cancel Scan</button>
-      </div>
-
-      <div id="checkinAlert" class="alert"></div>
-      <button class="secondary-btn" id="backBtn" style="width:100%;margin-top:16px">← Back</button>
+    <!-- ═══ LOADING ═══ -->
+    <div id="loadingSpinner" class="loading-spinner">
+        <div class="spinner"></div>
     </div>
 
-    <!-- SUCCESS SCREEN -->
-    <div id="successScreen" class="screen card">
-      <div class="success-container">
-        <div class="success-icon">✅</div>
-        <h2 class="success-title">Check-In Confirmed!</h2>
-        <p class="success-subtitle" id="successGreeting"></p>
-        <p class="success-subtitle" id="successMsg"></p>
+    <!-- ═══ SCRIPTS ═══ -->
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js">
+    </script>
+    <script type="module">
+        // ━━━ IMPORTS ━━━
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+        import {
+            getFirestore,
+            doc,
+            getDoc,
+            setDoc,
+            updateDoc,
+            collection,
+            addDoc,
+            getDocs,
+            query,
+            where
+        } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+        import { getAuth, signInAnonymously } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
 
-        <div id="rewardUnlocked" class="reward-unlocked">
-          <strong style="display:block;font-size:16px;margin-bottom:8px">🎉 Reward Unlocked!</strong>
-          <p id="unlockedRewardText" style="margin:0;font-size:14px"></p>
-          <button id="claimBtn" class="claim-btn" style="width:100%;margin-top:12px;padding:10px;font-size:13px">CLAIM AT COUNTER</button>
-        </div>
+        // ━━━ CONFIG ━━━
+        const firebaseConfig = {
+            apiKey: "AIzaSyBE_UvGf4ylNIsjQ_hDNGicp2iqQfEOkT4",
+            authDomain: "gamersparadise-bdc7e.firebaseapp.com",
+            projectId: "gamersparadise-bdc7e",
+            storageBucket: "gamersparadise-bdc7e.appspot.com",
+            messagingSenderId: "409381337462",
+            appId: "1:409381337462:web:017001d388c9352f112257"
+        };
+        const ADMIN_PHONE = '8446186106';
+        const DEFAULT_REWARDS = {
+            3: { name: 'Cold Coffee', icon: '☕' },
+            6: { name: 'French Fries', icon: '🍟' },
+            9: { name: '1-Hour Game Pass', icon: '🎮' },
+            12: { name: 'Paradise Mocktail', icon: '🍹' },
+            15: { name: 'Mystery Gift', icon: '🎁' },
+            18: { name: '3-Hour Game Pass', icon: '⏱️' }
+        };
+        const RARITY = {
+            3: 'rarity-bronze',
+            6: 'rarity-orange',
+            9: 'rarity-purple',
+            12: 'rarity-cyan',
+            15: 'rarity-gold',
+            18: 'rarity-gold'
+        };
+        const MILESTONES = [3, 6, 9, 12, 15, 18];
 
-        <div id="rewardMap" class="reward-map"></div>
+        // ━━━ STATE ━━━
+        let app = null,
+            db = null,
+            auth = null;
+        let currentPhone = null;
+        let currentName = null;
+        let currentMode = 'view';
+        let videoStream = null;
+        let scanActive = false;
+        let adminRewards = {};
 
-        <div class="progress-section">
-          <label>
-            <span>Progress This Month</span>
-            <span id="progressText">0/18</span>
-          </label>
-          <div class="progress-track">
-            <div class="progress-fill" id="progBar"></div>
-          </div>
-        </div>
+        // ━━━ UTILITIES ━━━
+        const utils = {
+            monthKey: () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`; },
+            nextMonthKey: () => { const d = new Date(); d.setMonth(d.getMonth() + 1); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`; },
+            todayKey: () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; },
+            formatDate: (s) => { const [y, m, d] = s.split('-'); return new Date(y, m - 1, d).toLocaleDateString('en-IN', { day: 'numeric',
+                    month: 'short' }); },
+            showAlert: (el, msg, type = 'error') => { el.textContent = msg; el.className = `alert show alert-${type}`; },
+            hideAlert: (el) => { el.classList.remove('show'); },
+            screen: (name) => { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+                document.getElementById(name + 'Screen').classList.add('active'); },
+            confetti: () => {
+                const colors = ['#ffd86f', '#ff6bcb', '#a855f7', '#4ade80', '#fbbf24', '#22d3ee'];
+                for (let i = 0; i < 70; i++) {
+                    const el = document.createElement('div');
+                    el.className = 'confetti';
+                    el.style.left = (Math.random() * 100) + '%';
+                    el.style.top = '-8px';
+                    el.style.width = (5 + Math.random() * 10) + 'px';
+                    el.style.height = (5 + Math.random() * 10) + 'px';
+                    el.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    el.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+                    document.body.appendChild(el);
+                    const dur = 1600 + Math.random() * 1400;
+                    const x = (Math.random() - 0.5) * 200;
+                    el.animate([
+                        { transform: 'translate(0,0) rotate(0deg)', opacity: 1 },
+                        { transform: `translate(${x}px, ${100+Math.random()*80}vh) rotate(${Math.random()*720}deg)`,
+                            opacity: 0 }
+                    ], { duration: dur, easing: 'cubic-bezier(0.25,0.46,0.45,0.94)' });
+                    setTimeout(() => el.remove(), dur + 100);
+                }
+            }
+        };
 
-        <div id="nextMilestone" class="next-reward-callout">
-          <strong id="nextMilestoneText"></strong>
-          <small id="nextMilestoneDesc"></small>
-        </div>
+        // ━━━ PARTICLES ━━━
+        (function initParticles() {
+            const canvas = document.getElementById('particles-canvas');
+            const ctx = canvas.getContext('2d');
+            let w, h, particles = [];
 
-        <div id="visitsDash" style="margin:16px 0;padding:16px;background:rgba(255,255,255,0.02);border-radius:10px;text-align:center">
-          <div style="font-size:28px;font-weight:900;color:var(--accent)" id="totalVisits">0</div>
-          <small style="color:var(--muted)">visits this month</small>
-        </div>
+            function resize() {
+                w = canvas.width = window.innerWidth;
+                h = canvas.height = window.innerHeight;
+            }
+            resize();
+            window.addEventListener('resize', resize);
 
-        <button class="primary-btn" id="continueBtn" style="margin-top:16px">View Full Dashboard</button>
-        <button class="secondary-btn" id="newCheckInBtn" style="width:100%;margin-top:8px">New Check-In</button>
-      </div>
-    </div>
+            const count = Math.min(80, Math.floor((w * h) / 12000));
+            for (let i = 0; i < count; i++) {
+                particles.push({
+                    x: Math.random() * w,
+                    y: Math.random() * h,
+                    r: 1.2 + Math.random() * 2.5,
+                    dx: (Math.random() - 0.5) * 0.3,
+                    dy: (Math.random() - 0.5) * 0.3,
+                    o: 0.15 + Math.random() * 0.35,
+                    hue: 260 + Math.random() * 40
+                });
+            }
 
-    <!-- DASHBOARD SCREEN -->
-    <div id="dashScreen" class="screen card">
-      <div class="user-profile">
-        <div class="user-info">
-          <h3 id="userPhone">Guest</h3>
-          <small id="userMonth"></small>
-        </div>
-        <div class="visit-counter">
-          <div class="num" id="dashVisits">0</div>
-          <small>visits</small>
-        </div>
-      </div>
+            function draw() {
+                ctx.clearRect(0, 0, w, h);
+                for (const p of particles) {
+                    p.x += p.dx;
+                    p.y += p.dy;
+                    if (p.x < 0) p.x = w;
+                    if (p.x > w) p.x = 0;
+                    if (p.y < 0) p.y = h;
+                    if (p.y > h) p.y = 0;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                    ctx.fillStyle = `hsla(${p.hue}, 70%, 65%, ${p.o})`;
+                    ctx.fill();
+                    // glow
+                    ctx.shadowColor = `hsla(${p.hue}, 70%, 65%, 0.1)`;
+                    ctx.shadowBlur = 16;
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                }
+                requestAnimationFrame(draw);
+            }
+            draw();
+        })();
 
-      <div class="progress-section">
-        <label>
-          <span>Monthly Progress</span>
-          <span id="dashProgressText">0/18</span>
-        </label>
-        <div class="progress-track">
-          <div class="progress-fill" id="dashProgBar"></div>
-        </div>
-      </div>
-
-      <div id="nextMilestoneCard" class="next-reward-callout" style="display:none">
-        <strong id="nextText"></strong>
-        <small id="nextDesc"></small>
-      </div>
-
-      <h4 style="font-size:12px;color:var(--muted);text-transform:uppercase;margin:20px 0 12px">Available Rewards</h4>
-      <div id="dashMilestones" class="milestone-grid"></div>
-
-      <div class="history-section">
-        <h4>Recent Check-Ins</h4>
-        <div id="visitLog" class="visit-log"></div>
-      </div>
-
-      <button class="secondary-btn" id="checkInBtn" style="width:100%;margin-top:20px">+ Check In Today</button>
-    </div>
-  </div>
-
-  <!-- TERMS MODAL -->
-  <div id="termsModal" class="modal-overlay">
-    <div class="modal">
-      <button class="modal-close" id="closeTerms">✕</button>
-      <h3>Terms & Privacy</h3>
-      <p style="font-size:13px;color:var(--muted);line-height:1.6">
-        <strong>Your Data:</strong> We collect your phone number to track visits and reward progress. Your data is stored securely on Firebase and will never be shared with third parties.
-      </p>
-      <p style="font-size:13px;color:var(--muted);line-height:1.6;margin-top:12px">
-        <strong>Camera:</strong> We request camera access to scan the lounge QR code at check-in. This is done only during the visit and is not stored long-term.
-      </p>
-      <p style="font-size:13px;color:var(--muted);line-height:1.6;margin-top:12px">
-        <strong>Rewards:</strong> Rewards reset monthly and are non-transferable. By checking in, you agree to these terms.
-      </p>
-      <button class="primary-btn" id="acceptTerms" style="margin-top:16px">I Understand</button>
-    </div>
-  </div>
-
-  <div id="loadingSpinner" class="loading-spinner">
-    <div class="spinner"></div>
-  </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
-  <script type="module">
-    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-    import { getFirestore, doc, getDoc, setDoc, updateDoc, serverTimestamp, collection, addDoc, getDocs, query, where } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
-    import { getAuth, signInAnonymously } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyBE_UvGf4ylNIsjQ_hDNGicp2iqQfEOkT4",
-      authDomain: "gamersparadise-bdc7e.firebaseapp.com",
-      projectId: "gamersparadise-bdc7e",
-      storageBucket: "gamersparadise-bdc7e.appspot.com",
-      messagingSenderId: "409381337462",
-      appId: "1:409381337462:web:017001d388c9352f112257"
-    };
-
-    const REWARDS = {3:'Cold Coffee',6:'French Fries',9:'1-Hour Free Game Pass',12:'Paradise Mocktail',15:'Mystery Gift',18:'3-Hour Game Pass'};
-    const ICONS = {3:'☕',6:'🍟',9:'🎮',12:'🍹',15:'🎁',18:'⏱️'};
-
-    let app=null,db=null,auth=null,currentPhone=null,currentMonth=null,currentName=null,videoStream=null,scanActive=false;
-
-    function initFirebase(){
-      try{
-        app = initializeApp(firebaseConfig);
-        db = getFirestore(app);
-        auth = getAuth(app);
-        signInAnonymously(auth).catch(()=>{});
-        return true;
-      }catch(e){return false}
-    }
-
-    const utils = {
-      monthKey: ()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`},
-      todayKey: ()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`},
-      toRad: (d)=>d*Math.PI/180,
-      distance: (lat1,lon1,lat2,lon2)=>{const R=6371,dLat=utils.toRad(lat2-lat1),dLon=utils.toRad(lon2-lon1),a=Math.sin(dLat/2)**2+Math.cos(utils.toRad(lat1))*Math.cos(utils.toRad(lat2))*Math.sin(dLon/2)**2;return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a))},
-      formatDate: (dateStr)=>{const[y,m,d]=dateStr.split('-');return new Date(y,m-1,d).toLocaleDateString('en-IN',{day:'numeric',month:'short'})},
-      showAlert: (el,msg,type='error')=>{el.textContent=msg;el.className=`alert show alert-${type}`},
-      hideAlert: (el)=>{el.classList.remove('show')},
-      screen: (name)=>{document.querySelectorAll('.screen').forEach(s=>{s.classList.remove('active')});
-      document.getElementById(name+'Screen').classList.add('active')},
-      confetti: ()=>{for(let i=0;i<50;i++){const el=document.createElement('div');el.className='confetti';el.style.left=(Math.random()*100)+'%';el.style.top='0';el.style.width='8px';el.style.height='8px';el.style.background=['#ffd86f','#ff6bcb','#7b2cbf','#00e676'][Math.floor(Math.random()*4)];el.style.position='fixed';el.style.pointerEvents='none';el.style.zIndex='1000';document.body.appendChild(el);const dur=2000+Math.random()*1000;el.animate([{transform:'translateY(0)',opacity:1},{transform:`translateY(${100+Math.random()*100}vh) rotate(${Math.random()*360}deg)`,opacity:0}],{duration:dur,easing:'cubic-bezier(0.25,0.46,0.45,0.94)'});setTimeout(()=>el.remove(),dur)}}
-    };
-
-    async function stampVisit(phone){
-      const uid='user_'+phone;
-      const mk=utils.monthKey();
-      const tk=utils.todayKey();
-      const docRef=doc(db,'loyalty_users',uid);
-      const snap=await getDoc(docRef);
-      
-      let data = snap.exists() ? snap.data() : {phone,createdAt:new Date().toISOString(),months:{}};
-      if(!data.months) data.months={};
-      if(!data.months[mk]) data.months[mk]={visits:0,dates:[],claimed:[],monthStartDate:new Date().toISOString()};
-      
-      const monthData = data.months[mk];
-      if(monthData.dates.includes(tk)) return {success:false,alreadyVisited:true,visits:monthData.visits,claimed:monthData.claimed,dates:monthData.dates};
-      
-      monthData.visits += 1;
-      monthData.dates.push(tk);
-      
-      const cinsRef = collection(db,'loyalty_users',uid,'checkIns');
-      await addDoc(cinsRef,{date:tk,timestamp:new Date().toISOString()});
-      
-      const milestones = Object.keys(REWARDS).map(Number).sort((a,b)=>a-b);
-      let newReward = null;
-      for(const m of milestones){if(monthData.visits===m && !monthData.claimed.includes(m)){newReward={m,name:REWARDS[m]};break}}
-      
-      if(!snap.exists()) await setDoc(docRef,data);
-      else await updateDoc(docRef,{[`months.${mk}`]:monthData});
-      
-      return {success:true,alreadyVisited:false,visits:monthData.visits,claimed:monthData.claimed,dates:monthData.dates,newReward};
-    }
-
-    async function verifySessionCode(code){
-      if(!code) return false;
-      const directRef = doc(db,'sessions',code);
-      try{
-        const directSnap = await getDoc(directRef);
-        if(directSnap.exists()){
-          const directData = directSnap.data();
-          if(directData.used) return false;
-          await updateDoc(directRef,{used:true,scannedAt:serverTimestamp()});
-          return true;
+        // ━━━ FIREBASE ━━━
+        function initFirebase() {
+            try {
+                app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+                signInAnonymously(auth).catch(() => {});
+                return true;
+            } catch (e) { return false; }
         }
-      }catch(_){ }
-      try{
-        const sessionsRef = collection(db,'sessions');
-        const q = query(sessionsRef, where('qrCode','==',code));
-        const snap = await getDocs(q);
-        if(snap.empty) return false;
-        const sessionDoc = snap.docs[0];
-        const sessionData = sessionDoc.data();
-        if(sessionData.used) return false;
-        await updateDoc(sessionDoc.ref,{used:true,scannedAt:serverTimestamp()});
-        return true;
-      }catch(_){return false}
-    }
 
-    async function claimReward(phone,milestone){
-      const uid='user_'+phone;
-      const mk=utils.monthKey();
-      const docRef=doc(db,'loyalty_users',uid);
-      const snap=await getDoc(docRef);
-      if(!snap.exists()) throw new Error('User not found');
-      const data=snap.data();
-      const monthData=data.months?.[mk];
-      if(!monthData) throw new Error('Month data not found');
-      if(!monthData.claimed.includes(milestone)){monthData.claimed.push(milestone);await updateDoc(docRef,{[`months.${mk}`]:monthData})}
-    }
-
-    async function fetchUserData(phone){
-      const uid='user_'+phone;
-      const docRef=doc(db,'loyalty_users',uid);
-      const snap=await getDoc(docRef);
-      if(!snap.exists()) return null;
-      const data=snap.data();
-      const mk=utils.monthKey();
-      return {visits:data.months?.[mk]?.visits||0,claimed:data.months?.[mk]?.claimed||[],dates:data.months?.[mk]?.dates||[]};
-    }
-
-    async function fetchCustomerName(phone){
-      const customersRef = collection(db,'gamers_paradise_data','gamersparadise_prod','customers');
-      const q = query(customersRef, where('phone', '==', phone));
-      const snap = await getDocs(q);
-      if(snap.empty) return null;
-      const customer = snap.docs[0].data();
-      return customer.name || null;
-    }
-
-    function renderMilestones(visits,claimed,targetEl){
-      targetEl.innerHTML='';
-      const milestones=[3,6,9,12,15,18];
-      for(const m of milestones){
-        const done=visits>=m;
-        const isClaimed=claimed.includes(m);
-        const el=document.createElement('div');
-        el.className='milestone-item';
-        if(done) el.classList.add('unlocked');
-        if(isClaimed) el.classList.add('claimed');
-        el.innerHTML=`
-          <div class="milestone-icon">${ICONS[m]}</div>
-          <div class="milestone-details">
-            <strong>${m} visits</strong>
-            <small>${REWARDS[m]}</small>
-          </div>
-          <div class="milestone-status ${done && !isClaimed?'unlocked':isClaimed?'claimed':'locked'}">
-            ${isClaimed?'✓ Claimed':done?'<button class="claim-btn" data-m="'+m+'">CLAIM</button>':'🔒 Locked'}
-          </div>`;
-        targetEl.appendChild(el);
-      }
-      targetEl.querySelectorAll('.claim-btn').forEach(btn=>btn.addEventListener('click',async(e)=>{
-        const m=parseInt(e.target.dataset.m);
-        try{await claimReward(currentPhone,m);utils.confetti();e.target.closest('.milestone-status').innerHTML='✓ Claimed';}catch(err){}
-      }));
-    }
-
-    function renderDashboard(visits,claimed,dates,name){
-      const displayName = name ? name : 'user';
-      document.getElementById('userPhone').textContent=`Hi ${displayName}`;
-      document.getElementById('userMonth').textContent=new Date().toLocaleString(undefined,{month:'long',year:'numeric'});
-      document.getElementById('dashVisits').textContent=visits;
-      const pct=Math.min((visits/18)*100,100);
-      document.getElementById('dashProgBar').style.width=pct+'%';
-      document.getElementById('dashProgressText').textContent=visits+'/18';
-      
-      const milestones=[3,6,9,12,15,18];
-      const nextM=milestones.find(m=>m>visits);
-      if(nextM){
-        document.getElementById('nextMilestoneCard').style.display='block';
-        document.getElementById('nextText').textContent=`${nextM-visits} visit${nextM-visits>1?'s':''} to ${REWARDS[nextM]}`;
-        document.getElementById('nextDesc').textContent=`Keep going! You're almost there.`;
-      }
-      
-      renderMilestones(visits,claimed,document.getElementById('dashMilestones'));
-      
-      const logEl=document.getElementById('visitLog');
-      logEl.innerHTML='';
-      if(dates.length===0) logEl.innerHTML='<div style="color:var(--muted);font-size:12px">No visits yet. Start checking in!</div>';
-      else dates.slice().reverse().forEach(d=>{const item=document.createElement('div');item.className='visit-item';item.innerHTML=`<span class="date">${utils.formatDate(d)}</span><span class="badge">Visited</span>`;logEl.appendChild(item)});
-    }
-
-    // Setup UI
-    window.addEventListener('load',async()=>{
-      if(!initFirebase()) return;
-      
-      // Modal
-      document.getElementById('termsBtn').addEventListener('click',()=>document.getElementById('termsModal').classList.add('show'));
-      document.getElementById('closeTerms').addEventListener('click',()=>document.getElementById('termsModal').classList.remove('show'));
-      document.getElementById('acceptTerms').addEventListener('click',()=>document.getElementById('termsModal').classList.remove('show'));
-      
-      // Landing -> Check-in
-      document.getElementById('startBtn').addEventListener('click',()=>utils.screen('checkin'));
-      document.getElementById('backBtn').addEventListener('click',()=>utils.screen('landing'));
-      
-      const phoneInput=document.getElementById('phoneInput');
-      const scanBtn=document.getElementById('scanBtn');
-      const scannerPanel=document.getElementById('scannerPanel');
-      const qrVideo=document.getElementById('qrVideo');
-      const qrCanvas=document.getElementById('qrCanvas');
-      const scanStatus=document.getElementById('scanStatus');
-      const cancelScanBtn=document.getElementById('cancelScanBtn');
-      const checkinAlert=document.getElementById('checkinAlert');
-      const loadingSpinner=document.getElementById('loadingSpinner');
-      
-      function stopVideoStream(){
-        scanActive=false;
-        if(videoStream){
-          videoStream.getTracks().forEach(track=>track.stop());
-          videoStream=null;
+        // ━━━ REWARD CONFIGS ━━━
+        async function getRewardConfig(monthKey) {
+            try {
+                const ref = doc(db, 'reward_configs', monthKey);
+                const snap = await getDoc(ref);
+                if (snap.exists()) {
+                    const data = snap.data();
+                    const rewards = {};
+                    for (const [k, v] of Object.entries(data.rewards || {})) {
+                        rewards[parseInt(k)] = v;
+                    }
+                    return rewards;
+                }
+                return null;
+            } catch (e) { return null; }
         }
-        qrVideo.pause();
-        qrVideo.srcObject = null;
-        scannerPanel.style.display='none';
-      }
-      
-      function showScanner(){
-        scannerPanel.style.display='flex';
-        scanStatus.textContent='Point your camera at the lounge QR code.';
-      }
-      
-      async function startQRCodeScan(){
-        utils.hideAlert(checkinAlert);
-        const phone=(phoneInput.value||'').trim().replace(/\D/g,'');
-        if(!/^[0-9]{10}$/.test(phone)){utils.showAlert(checkinAlert,'Please enter 10-digit number','error');return}
-        currentPhone=phone;
 
-        try{
-          videoStream = await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});
-          qrVideo.srcObject = videoStream;
-          await qrVideo.play();
-          scanActive = true;
-          showScanner();
-          requestAnimationFrame(scanFrame);
-        }catch(e){
-          utils.showAlert(checkinAlert,'Camera access is required for QR check-in. Please allow camera permissions.','error');
+        async function saveRewardConfig(monthKey, rewards) {
+            const ref = doc(db, 'reward_configs', monthKey);
+            await setDoc(ref, { rewards, updatedAt: new Date().toISOString() });
         }
-      }
-      
-      async function scanFrame(){
-        if(!scanActive) return;
-        if(qrVideo.readyState === HTMLVideoElement.HAVE_ENOUGH_DATA){
-          qrCanvas.width = qrVideo.videoWidth;
-          qrCanvas.height = qrVideo.videoHeight;
-          const ctx = qrCanvas.getContext('2d');
-          ctx.drawImage(qrVideo,0,0,qrCanvas.width,qrCanvas.height);
-          const imageData = ctx.getImageData(0,0,qrCanvas.width,qrCanvas.height);
-          const code = jsQR(imageData.data, imageData.width, imageData.height, {inversionAttempts:'dontInvert'});
-          if(code && code.data){
-            scanStatus.textContent='QR found! Verifying...';
-            scanActive=false;
-            await processQRCode(code.data);
-            return;
-          }
-        }
-        requestAnimationFrame(scanFrame);
-      }
-      
-      async function processQRCode(scannedCode){
-        try{
-          const valid = await verifySessionCode(scannedCode.trim());
-          if(!valid){
-            utils.showAlert(checkinAlert,'QR code was invalid or already used. Please try again.','error');
-            stopVideoStream();
-            return;
-          }
-          stopVideoStream();
-          await completeCheckin(currentPhone);
-        }catch(e){
-          utils.showAlert(checkinAlert,'QR verification failed. Please try again.','error');
-          stopVideoStream();
-        }
-      }
-      
-      async function completeCheckin(phone){
-        loadingSpinner.classList.add('show');
-        try{
-          currentMonth=utils.monthKey();
-          currentName = await fetchCustomerName(phone);
-          const result = await stampVisit(phone);
-          loadingSpinner.classList.remove('show');
-          const greeting = `Hi ${currentName || 'user'}`;
-          document.getElementById('successGreeting').textContent = greeting;
-          document.getElementById('totalVisits').textContent = result.visits;
-          const pct=Math.min((result.visits/18)*100,100);
-          document.getElementById('progBar').style.width=pct+'%';
-          document.getElementById('progressText').textContent=result.visits+'/18';
-          document.getElementById('successMsg').textContent=result.alreadyVisited ? 'You already checked in today. Come back tomorrow!' : `Visit #${result.visits} recorded!`;
-          
-          if(result.alreadyVisited){
-            document.getElementById('rewardUnlocked').classList.remove('show');
-          } else if(result.newReward){
-            utils.confetti();
-            document.getElementById('rewardUnlocked').classList.add('show');
-            document.getElementById('unlockedRewardText').textContent=`You unlocked ${ICONS[result.newReward.m]} ${result.newReward.name}! Show this to claim at the counter.`;
-            document.getElementById('claimBtn').textContent='CLAIM AT COUNTER';
-            document.getElementById('claimBtn').onclick = async ()=>{ await claimReward(phone,result.newReward.m); document.getElementById('claimBtn').textContent='✓ CLAIMED'; };
-          } else {
-            document.getElementById('rewardUnlocked').classList.remove('show');
-          }
-          stopVideoStream();
 
-          const milestones=[3,6,9,12,15,18];
-          const nextM=milestones.find(m=>m>result.visits);
-          if(nextM){
-            document.getElementById('nextMilestoneText').textContent=`${nextM-result.visits} visit${nextM-result.visits>1?'s':''} away`;
-            document.getElementById('nextMilestoneDesc').textContent=`Next: ${REWARDS[nextM]}`;
-          } else {
-            document.getElementById('nextMilestoneText').textContent='Max level reached!';
-            document.getElementById('nextMilestoneDesc').textContent='You have unlocked every reward for this month.';
-          }
-
-          renderRewardMap(result.visits,result.claimed || []);
-          utils.screen('success');
-        }catch(e){
-          loadingSpinner.classList.remove('show');
-          utils.showAlert(checkinAlert,e.message || 'Unable to complete check-in.','error');
+        async function getActiveRewards() {
+            const mk = utils.monthKey();
+            const config = await getRewardConfig(mk);
+            if (config && Object.keys(config).length > 0) return config;
+            return { ...DEFAULT_REWARDS };
         }
-      }
-      
-      function renderRewardMap(visits,claimed){
-        const mapEl = document.getElementById('rewardMap');
-        mapEl.innerHTML='';
-        const milestones=[3,6,9,12,15,18];
-        for(const m of milestones){
-          const done = visits >= m;
-          const isClaimed = claimed.includes(m);
-          const node = document.createElement('div');
-          node.className='reward-node '+(isClaimed?'claimed':done?'unlocked':'locked');
-          node.innerHTML = `
-            <div class="node-icon">${ICONS[m]}</div>
-            <div class="node-title">${REWARDS[m]}</div>
-            <div class="node-subtitle">Reach ${m} visits</div>
-            <div class="node-state">${isClaimed?'Claimed':done?'Unlocked':'Locked'}</div>
+
+        async function getNextMonthRewards() {
+            const nmk = utils.nextMonthKey();
+            const config = await getRewardConfig(nmk);
+            if (config && Object.keys(config).length > 0) return config;
+            return { ...DEFAULT_REWARDS };
+        }
+
+        // ━━━ USER DATA ━━━
+        async function fetchUserData(phone) {
+            const uid = 'user_' + phone;
+            const ref = doc(db, 'loyalty_users', uid);
+            const snap = await getDoc(ref);
+            if (!snap.exists()) return null;
+            const data = snap.data();
+            const mk = utils.monthKey();
+            return {
+                visits: data.months?.[mk]?.visits || 0,
+                claimed: data.months?.[mk]?.claimed || [],
+                dates: data.months?.[mk]?.dates || []
+            };
+        }
+
+        async function fetchCustomerName(phone) {
+            try {
+                const ref = collection(db, 'gamers_paradise_data', 'gamersparadise_prod', 'customers');
+                const q = query(ref, where('phone', '==', phone));
+                const snap = await getDocs(q);
+                if (snap.empty) return null;
+                return snap.docs[0].data().name || null;
+            } catch (e) { return null; }
+        }
+
+        async function stampVisit(phone) {
+            const uid = 'user_' + phone;
+            const mk = utils.monthKey();
+            const tk = utils.todayKey();
+            const ref = doc(db, 'loyalty_users', uid);
+            const snap = await getDoc(ref);
+
+            let data = snap.exists() ? snap.data() : { phone, createdAt: new Date().toISOString(), months: {} };
+            if (!data.months) data.months = {};
+            if (!data.months[mk]) data.months[mk] = { visits: 0, dates: [], claimed: [], monthStartDate: new Date()
+                    .toISOString() };
+
+            const monthData = data.months[mk];
+            if (monthData.dates.includes(tk)) {
+                return { success: false, alreadyVisited: true, visits: monthData.visits, claimed: monthData.claimed,
+                    dates: monthData.dates };
+            }
+
+            monthData.visits += 1;
+            monthData.dates.push(tk);
+
+            const cinRef = collection(db, 'loyalty_users', uid, 'checkIns');
+            await addDoc(cinRef, { date: tk, timestamp: new Date().toISOString() });
+
+            const rewards = await getActiveRewards();
+            const milestones = Object.keys(rewards).map(Number).sort((a, b) => a - b);
+            let newReward = null;
+            for (const m of milestones) {
+                if (monthData.visits === m && !monthData.claimed.includes(m)) {
+                    newReward = { m, name: rewards[m].name, icon: rewards[m].icon };
+                    break;
+                }
+            }
+
+            if (!snap.exists()) await setDoc(ref, data);
+            else await updateDoc(ref, { [`months.${mk}`]: monthData });
+
+            return { success: true, alreadyVisited: false, visits: monthData.visits, claimed: monthData.claimed,
+                dates: monthData.dates, newReward };
+        }
+
+        async function claimReward(phone, milestone) {
+            const uid = 'user_' + phone;
+            const mk = utils.monthKey();
+            const ref = doc(db, 'loyalty_users', uid);
+            const snap = await getDoc(ref);
+            if (!snap.exists()) throw new Error('User not found');
+            const data = snap.data();
+            const monthData = data.months?.[mk];
+            if (!monthData) throw new Error('Month data not found');
+            if (!monthData.claimed.includes(milestone)) {
+                monthData.claimed.push(milestone);
+                await updateDoc(ref, { [`months.${mk}`]: monthData });
+            }
+        }
+
+        // ━━━ QR VERIFICATION ━━━
+        async function verifySessionCode(code) {
+            if (!code || typeof code !== 'string') return false;
+            let normalized;
+            try { normalized = decodeURIComponent(code.trim()); } catch (e) { normalized = code.trim(); }
+            if (!normalized.toUpperCase().startsWith('SESSION_')) return false;
+            const codeToQuery = normalized.replace(/^(SESSION_)([^_]+)(_.*)$/i, (m, p, id, s) => `${p}${id.toLowerCase()}${s}`);
+            try {
+                const ref = collection(db, 'gamers_paradise_data', 'gamersparadise_prod', 'sessions');
+                const q = query(ref, where('qrCode', '==', codeToQuery));
+                const snap = await getDocs(q);
+                return !snap.empty;
+            } catch (e) { return false; }
+        }
+
+        // ━━━ RENDER DASHBOARD ━━━
+        async function renderDashboard(visits, claimed, dates, name) {
+            const rewards = await getActiveRewards();
+            const milestones = Object.keys(rewards).map(Number).sort((a, b) => a - b);
+
+            const displayName = name || 'Guest';
+            const checkedIn = dates && dates.includes(utils.todayKey());
+            const streak = calcStreak(dates);
+
+            // Hero
+            document.getElementById('dashGreeting').innerHTML = `Hi ${displayName} 👋 <small>${new Date().toLocaleString(undefined,{month:'long',year:'numeric'})}</small>`;
+            document.getElementById('dashStreak').textContent = `🔥 ${streak}d`;
+            document.getElementById('dashRank').textContent = getRank(visits);
+
+            // Next reward
+            const nextM = milestones.find(m => m > visits);
+            const heroNext = document.getElementById('dashNextReward');
+            if (nextM) {
+                document.getElementById('dashNextIcon').textContent = rewards[nextM].icon;
+                document.getElementById('dashNextName').textContent = rewards[nextM].name;
+                document.getElementById('dashNextRemaining').textContent = `${nextM - visits} visit${nextM-visits>1?'s':''} remaining`;
+                document.getElementById('dashNextProgress').textContent = visits;
+                heroNext.style.display = 'flex';
+            } else {
+                document.getElementById('dashNextIcon').textContent = '🏆';
+                document.getElementById('dashNextName').textContent = 'All unlocked!';
+                document.getElementById('dashNextRemaining').textContent = 'You\'re a legend!';
+                document.getElementById('dashNextProgress').textContent = visits;
+                heroNext.style.display = 'flex';
+            }
+
+            // XP Bar
+            const pct = Math.min((visits / 18) * 100, 100);
+            document.getElementById('dashXpFill').style.width = pct + '%';
+            document.getElementById('dashXpLabel').textContent = `${visits} / 18`;
+            document.getElementById('dashLevel').textContent = Math.floor(visits / 3) + 1;
+            const remain = Math.max(0, 18 - visits);
+            document.getElementById('dashXpRemain').textContent = remain > 0 ? `${remain} visits to max` : '🏆 MAX LEVEL';
+
+            // Journey
+            renderJourney(visits, claimed, rewards);
+
+            // Reward Cards
+            renderRewardCards(visits, claimed, rewards);
+
+            // Visit log
+            renderVisitLog(dates);
+
+            // Today status
+            document.querySelector('.today-status')?.remove();
+        }
+
+        function calcStreak(dates) {
+            if (!dates || dates.length === 0) return 0;
+            const sorted = [...dates].sort();
+            let streak = 0;
+            const today = utils.todayKey();
+            let check = today;
+            for (let i = sorted.length - 1; i >= 0; i--) {
+                if (sorted[i] === check) { streak++;
+                    check = utils.todayKeyFromDate(new Date(new Date(check).getTime() - 86400000)); } else break;
+            }
+            // fix: handle today's date properly
+            // simpler: count consecutive days ending today
+            const allDates = new Set(dates);
+            let s = 0;
+            let d = new Date();
+            while (true) {
+                const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+                if (allDates.has(key)) { s++;
+                    d.setDate(d.getDate() - 1); } else break;
+            }
+            return s;
+        }
+
+        // Helper to get today key from date
+        utils.todayKeyFromDate = function(d) {
+            return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+        };
+
+        function getRank(visits) {
+            if (visits >= 18) return '👑 Diamond';
+            if (visits >= 12) return '💎 Platinum';
+            if (visits >= 9) return '🥇 Gold';
+            if (visits >= 6) return '🥈 Silver';
+            if (visits >= 3) return '🥉 Bronze';
+            return '🏆 Recruit';
+        }
+
+        function renderJourney(visits, claimed, rewards) {
+            const track = document.getElementById('journeyTrack');
+            track.innerHTML = '';
+            const milestones = Object.keys(rewards).map(Number).sort((a, b) => a - b);
+
+            for (const m of milestones) {
+                const done = visits >= m;
+                const isClaimed = claimed.includes(m);
+                const node = document.createElement('div');
+                node.className = 'journey-node ' + (isClaimed ? 'claimed' : done ? 'unlocked' : 'locked');
+                node.innerHTML = `
+              <div class="j-icon">${rewards[m].icon}</div>
+              <div class="j-label">${m}</div>
+              <div class="j-status">${isClaimed?'✅':done?'⚡':'🔒'}</div>
+              <div class="j-connector"></div>
+            `;
+                track.appendChild(node);
+            }
+        }
+
+        function renderRewardCards(visits, claimed, rewards) {
+            const grid = document.getElementById('dashRewardGrid');
+            grid.innerHTML = '';
+            const milestones = Object.keys(rewards).map(Number).sort((a, b) => a - b);
+
+            for (const m of milestones) {
+                const done = visits >= m;
+                const isClaimed = claimed.includes(m);
+                const progress = Math.min(visits / m, 1);
+                const card = document.createElement('div');
+                const rarity = RARITY[m] || '';
+                card.className = `reward-card ${done && !isClaimed ? 'unlocked' : ''} ${isClaimed ? 'claimed' : ''} ${rarity}`;
+                const statusText = isClaimed ? 'Claimed' : done ? 'Unlock' : 'Locked';
+                const statusClass = isClaimed ? 'claimed' : done ? 'unlocked' : 'locked';
+
+                card.innerHTML = `
+              <div class="r-icon">${rewards[m].icon}</div>
+              <div class="r-info">
+                <div class="r-name">${rewards[m].name}</div>
+                <div class="r-desc">${m} visits required</div>
+                <div class="r-progress">
+                  <div class="mini-bar"><div class="fill" style="width:${progress*100}%;background:${isClaimed?'var(--gold)':done?'var(--accent)':'var(--muted)'};"></div></div>
+                  <span class="r-count">${Math.min(visits,m)}/${m}</span>
+                </div>
+              </div>
+              <div class="r-status ${statusClass}">${statusText}</div>
+            `;
+                grid.appendChild(card);
+
+                // Claim button for unlocked rewards
+                if (done && !isClaimed) {
+                    const claimBtn = document.createElement('button');
+                    claimBtn.textContent = '🎯 Claim';
+                    claimBtn.className = 'claim-btn';
+                    claimBtn.style.cssText =
+                        'width:100%;margin-top:4px;padding:6px;font-size:11px;';
+                    claimBtn.addEventListener('click', async (e) => {
+                        e.stopPropagation();
+                        try {
+                            await claimReward(currentPhone, m);
+                            utils.confetti();
+                            await refreshDashboard();
+                        } catch (err) { /* ignore */ }
+                    });
+                    card.querySelector('.r-info').appendChild(claimBtn);
+                }
+            }
+        }
+
+        function renderVisitLog(dates) {
+            const log = document.getElementById('visitLog');
+            log.innerHTML = '';
+            if (!dates || dates.length === 0) {
+                log.innerHTML = '<div style="color:var(--muted);font-size:12px;padding:6px;">No visits yet. Start your journey!</div>';
+                return;
+            }
+            dates.slice().reverse().forEach(d => {
+                const item = document.createElement('div');
+                item.className = 'visit-item';
+                item.innerHTML = `<span class="date">${utils.formatDate(d)}</span><span class="badge">✔ Check-in</span>`;
+                log.appendChild(item);
+            });
+        }
+
+        async function refreshDashboard() {
+            if (!currentPhone) return;
+            const data = await fetchUserData(currentPhone);
+            const name = currentName || await fetchCustomerName(currentPhone) || 'Guest';
+            if (!data) {
+                // New user - show empty state
+                document.getElementById('dashGreeting').innerHTML = `Hi ${name} 👋 <small>${new Date().toLocaleString(undefined,{month:'long',year:'numeric'})}</small>`;
+                document.getElementById('dashStreak').textContent = '🔥 0d';
+                document.getElementById('dashRank').textContent = '🏆 Recruit';
+                document.getElementById('dashXpFill').style.width = '0%';
+                document.getElementById('dashXpLabel').textContent = '0 / 18';
+                document.getElementById('dashLevel').textContent = '1';
+                document.getElementById('dashXpRemain').textContent = '18 visits to max';
+                document.getElementById('dashNextIcon').textContent = '☕';
+                document.getElementById('dashNextName').textContent = 'Cold Coffee';
+                document.getElementById('dashNextRemaining').textContent = '3 visits remaining';
+                document.getElementById('dashNextProgress').textContent = '0';
+                document.getElementById('journeyTrack').innerHTML = '';
+                document.getElementById('dashRewardGrid').innerHTML = '';
+                document.getElementById('visitLog').innerHTML =
+                    '<div style="color:var(--muted);font-size:12px;padding:6px;">No visits yet. Start your journey!</div>';
+                return;
+            }
+            await renderDashboard(data.visits, data.claimed || [], data.dates || [], name);
+        }
+
+        // ━━━ ADMIN ━━━
+        async function loadAdminPortal() {
+            const nmk = utils.nextMonthKey();
+            document.getElementById('adminMonthLabel').textContent = nmk;
+            const rewards = await getNextMonthRewards();
+            adminRewards = { ...rewards };
+            const list = document.getElementById('adminRewardsList');
+            list.innerHTML = '';
+            const sorted = Object.keys(rewards).map(Number).sort((a, b) => a - b);
+
+            for (const m of sorted) {
+                const item = document.createElement('div');
+                item.className = 'admin-reward-item';
+                item.innerHTML = `
+              <div class="r-icon">${rewards[m].icon}</div>
+              <div class="r-fields">
+                <input class="r-name-input" type="text" value="${rewards[m].name}" placeholder="Reward name" data-m="${m}">
+                <input class="r-icon-input" type="text" value="${rewards[m].icon}" placeholder="Icon" data-m="${m}" style="flex:0 0 50px;max-width:60px;text-align:center;">
+                <input class="r-visits-input" type="number" value="${m}" placeholder="Visits" data-m="${m}" style="flex:0 0 60px;max-width:70px;text-align:center;" min="1" max="30">
+              </div>
+              <button class="ghost-btn r-remove-btn" data-m="${m}" style="color:#f87171;font-size:16px;padding:4px 8px;">✕</button>
+            `;
+                list.appendChild(item);
+            }
+
+            // Add row
+            const addRow = document.createElement('div');
+            addRow.style.cssText =
+                'margin-top:8px;display:flex;gap:6px;align-items:center;flex-wrap:wrap;background:rgba(255,255,255,0.02);padding:8px 10px;border-radius:10px;border:1px dashed rgba(255,255,255,0.06);';
+            addRow.innerHTML = `
+            <input id="adminNewVisits" type="number" placeholder="Visits" style="flex:0 0 60px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.04);border-radius:8px;padding:6px 8px;color:var(--text);font-size:13px;text-align:center;" min="1" max="30">
+            <input id="adminNewName" type="text" placeholder="Reward name" style="flex:1;min-width:70px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.04);border-radius:8px;padding:6px 10px;color:var(--text);font-size:13px;">
+            <input id="adminNewIcon" type="text" placeholder="Icon" style="flex:0 0 46px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.04);border-radius:8px;padding:6px 8px;color:var(--text);font-size:13px;text-align:center;">
+            <button class="secondary-btn" id="adminAddRewardBtn" style="padding:4px 12px;font-size:12px;">+ Add</button>
           `;
-          mapEl.appendChild(node);
+            list.appendChild(addRow);
+
+            document.getElementById('adminAddRewardBtn').addEventListener('click', () => {
+                const v = parseInt(document.getElementById('adminNewVisits').value);
+                const n = document.getElementById('adminNewName').value.trim();
+                const i = document.getElementById('adminNewIcon').value.trim() || '🎮';
+                if (!v || v < 1 || !n) return;
+                if (adminRewards[v]) { alert('Visit count already exists.'); return; }
+                adminRewards[v] = { name: n, icon: i };
+                document.getElementById('adminNewVisits').value = '';
+                document.getElementById('adminNewName').value = '';
+                document.getElementById('adminNewIcon').value = '';
+                loadAdminPortal();
+            });
+
+            list.querySelectorAll('.r-remove-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const m = parseInt(btn.dataset.m);
+                    if (adminRewards[m]) { delete adminRewards[m];
+                        loadAdminPortal(); }
+                });
+            });
+
+            list.querySelectorAll('.r-name-input').forEach(inp => {
+                inp.addEventListener('change', () => { const m = parseInt(inp.dataset.m); if (adminRewards[m])
+                        adminRewards[m].name = inp.value; });
+            });
+            list.querySelectorAll('.r-icon-input').forEach(inp => {
+                inp.addEventListener('change', () => { const m = parseInt(inp.dataset.m); if (adminRewards[m])
+                        adminRewards[m].icon = inp.value; });
+            });
+            list.querySelectorAll('.r-visits-input').forEach(inp => {
+                inp.addEventListener('change', () => {
+                    const oldM = parseInt(inp.dataset.m);
+                    const newM = parseInt(inp.value);
+                    if (!newM || newM < 1 || newM === oldM) return;
+                    if (adminRewards[newM]) { alert('That visit count already exists.');
+                        inp.value = oldM; return; }
+                    const data = adminRewards[oldM];
+                    if (data) { delete adminRewards[oldM];
+                        adminRewards[newM] = data;
+                        loadAdminPortal(); }
+                });
+            });
         }
-      }
-      
-      scanBtn.addEventListener('click',startQRCodeScan);
-      cancelScanBtn.addEventListener('click',()=>{stopVideoStream();});
-      
-      document.getElementById('continueBtn').addEventListener('click',async()=>{
-        const data = await fetchUserData(currentPhone);
-        const name = currentName || await fetchCustomerName(currentPhone);
-        if(data) renderDashboard(data.visits,data.claimed,data.dates,name);
-        utils.screen('dash');
-      });
-      
-      document.getElementById('newCheckInBtn').addEventListener('click',()=>{phoneInput.value='';utils.screen('checkin');});
-      document.getElementById('checkInBtn').addEventListener('click',()=>{phoneInput.value='';utils.screen('checkin');});
-    });
-  </script>
+
+        // ━━━ SCANNER ━━━
+        async function startScanner(phone) {
+            const panel = document.getElementById('scannerPanel');
+            const video = document.getElementById('qrVideo');
+            const canvas = document.getElementById('qrCanvas');
+            const status = document.getElementById('scanStatus');
+
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+                videoStream = stream;
+                video.srcObject = stream;
+                await video.play();
+                scanActive = true;
+                panel.classList.add('show');
+                status.textContent = 'Point your camera at the lounge QR code.';
+
+                function scanFrame() {
+                    if (!scanActive) return;
+                    if (video.readyState === HTMLVideoElement.HAVE_ENOUGH_DATA) {
+                        canvas.width = video.videoWidth;
+                        canvas.height = video.videoHeight;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                        const code = jsQR(imageData.data, imageData.width, imageData.height, { inversionAttempts: 'dontInvert' });
+                        if (code && code.data) {
+                            status.textContent = 'QR found! Verifying...';
+                            scanActive = false;
+                            processQR(code.data, phone);
+                            return;
+                        }
+                    }
+                    requestAnimationFrame(scanFrame);
+                }
+                requestAnimationFrame(scanFrame);
+            } catch (e) {
+                utils.showAlert(document.getElementById('phoneAlert'), 'Camera access required for QR check-in.', 'error');
+            }
+        }
+
+        async function processQR(data, phone) {
+            try {
+                const valid = await verifySessionCode(data.trim());
+                if (!valid) {
+                    utils.showAlert(document.getElementById('phoneAlert'), 'Invalid or expired QR code. Please try again.',
+                        'error');
+                    stopScanner();
+                    return;
+                }
+                stopScanner();
+                await completeCheckin(phone);
+            } catch (e) {
+                utils.showAlert(document.getElementById('phoneAlert'), 'QR verification failed.', 'error');
+                stopScanner();
+            }
+        }
+
+        function stopScanner() {
+            scanActive = false;
+            if (videoStream) {
+                videoStream.getTracks().forEach(t => t.stop());
+                videoStream = null;
+            }
+            const video = document.getElementById('qrVideo');
+            video.pause();
+            video.srcObject = null;
+            document.getElementById('scannerPanel').classList.remove('show');
+        }
+
+        // ━━━ COMPLETE CHECKIN ━━━
+        async function completeCheckin(phone) {
+            const spinner = document.getElementById('loadingSpinner');
+            spinner.classList.add('show');
+            try {
+                const result = await stampVisit(phone);
+                spinner.classList.remove('show');
+
+                if (result.alreadyVisited) {
+                    utils.showAlert(document.getElementById('phoneAlert'), 'You already checked in today!', 'warn');
+                    currentPhone = phone;
+                    currentName = await fetchCustomerName(phone);
+                    await refreshDashboard();
+                    utils.screen('dash');
+                    return;
+                }
+
+                const name = await fetchCustomerName(phone) || 'user';
+                currentPhone = phone;
+                currentName = name;
+
+                document.getElementById('successGreeting').textContent = 'Hi ' + name + '!';
+                document.getElementById('successMsg').textContent = `Visit #${result.visits} recorded! 🎮`;
+                document.getElementById('successVisits').textContent = result.visits;
+                const pct = Math.min((result.visits / 18) * 100, 100);
+                document.getElementById('successProgBar').style.width = pct + '%';
+                document.getElementById('successProgressText').textContent = result.visits + ' / 18';
+
+                const rewards = await getActiveRewards();
+                const milestones = Object.keys(rewards).map(Number).sort((a, b) => a - b);
+
+                const rwEl = document.getElementById('rewardUnlocked');
+                if (result.newReward) {
+                    utils.confetti();
+                    rwEl.classList.add('show');
+                    document.getElementById('unlockedRewardText').textContent =
+                        `${result.newReward.icon} ${result.newReward.name}! Show this at the counter.`;
+                    document.getElementById('claimBtn').textContent = '🎯 CLAIM AT COUNTER';
+                    document.getElementById('claimBtn').onclick = async () => {
+                        await claimReward(phone, result.newReward.m);
+                        document.getElementById('claimBtn').textContent = '✅ CLAIMED';
+                        document.getElementById('claimBtn').classList.add('claimed');
+                    };
+                } else {
+                    rwEl.classList.remove('show');
+                }
+
+                const nextM = milestones.find(m => m > result.visits);
+                const nextEl = document.getElementById('successNextReward');
+                if (nextM) {
+                    document.getElementById('successNextText').textContent =
+                        `${nextM - result.visits} more → ${rewards[nextM].icon} ${rewards[nextM].name}`;
+                    document.getElementById('successNextDesc').textContent = 'Keep coming back!';
+                } else {
+                    document.getElementById('successNextText').textContent = '🏆 All rewards unlocked!';
+                    document.getElementById('successNextDesc').textContent = 'You\'re a legend!';
+                }
+
+                utils.screen('success');
+            } catch (e) {
+                spinner.classList.remove('show');
+                utils.showAlert(document.getElementById('phoneAlert'), e.message || 'Check-in failed.', 'error');
+            }
+        }
+
+        // ━━━ NAVIGATION ━━━
+        function goToPhoneEntry(mode) {
+            currentMode = mode;
+            document.getElementById('phoneEntryTitle').textContent = mode === 'view' ? 'View Your Progress' :
+                'Check In Today';
+            document.getElementById('phoneEntrySub').textContent = mode === 'view' ?
+                'Enter your phone to see your rewards and progress.' :
+                'Enter your phone, then scan the lounge QR to punch your visit.';
+            document.getElementById('phoneStatus').textContent = 'Enter your 10-digit number.';
+            utils.hideAlert(document.getElementById('phoneAlert'));
+            document.getElementById('phoneInput').value = '';
+            document.getElementById('scannerPanel').classList.remove('show');
+            stopScanner();
+
+            // Show/hide the View Progress button based on mode
+            const viewBtn = document.getElementById('phoneViewBtn');
+            if (mode === 'checkin') {
+                viewBtn.style.display = 'none';
+            } else {
+                viewBtn.style.display = 'flex';
+            }
+
+            utils.screen('phoneEntry');
+        }
+
+        // ━━━ MAIN ━━━
+        window.addEventListener('load', async () => {
+            if (!initFirebase()) return;
+
+            // Terms
+            document.getElementById('termsBtn').addEventListener('click', () => document.getElementById('termsModal')
+                .classList.add('show'));
+            document.getElementById('closeTerms').addEventListener('click', () => document.getElementById('termsModal')
+                .classList.remove('show'));
+            document.getElementById('acceptTerms').addEventListener('click', () => document.getElementById('termsModal')
+                .classList.remove('show'));
+
+            // Landing
+            document.getElementById('viewProgressBtn').addEventListener('click', () => goToPhoneEntry('view'));
+            document.getElementById('checkInLandingBtn').addEventListener('click', () => goToPhoneEntry('checkin'));
+
+            // Phone entry
+            document.getElementById('phoneBackBtn').addEventListener('click', () => {
+                stopScanner();
+                utils.screen('landing');
+            });
+
+            document.getElementById('phoneViewBtn').addEventListener('click', async () => {
+                const phone = document.getElementById('phoneInput').value.trim().replace(/\D/g, '');
+                const alert = document.getElementById('phoneAlert');
+                utils.hideAlert(alert);
+                if (!/^[0-9]{10}$/.test(phone)) {
+                    utils.showAlert(alert, 'Please enter a valid 10-digit number.', 'error');
+                    return;
+                }
+                if (phone === ADMIN_PHONE) {
+                    currentPhone = phone;
+                    await loadAdminPortal();
+                    utils.screen('admin');
+                    return;
+                }
+                currentPhone = phone;
+                currentName = await fetchCustomerName(phone);
+                await refreshDashboard();
+                utils.screen('dash');
+            });
+
+            document.getElementById('phoneCheckinBtn').addEventListener('click', async () => {
+                const phone = document.getElementById('phoneInput').value.trim().replace(/\D/g, '');
+                const alert = document.getElementById('phoneAlert');
+                utils.hideAlert(alert);
+                if (!/^[0-9]{10}$/.test(phone)) {
+                    utils.showAlert(alert, 'Please enter a valid 10-digit number.', 'error');
+                    return;
+                }
+                const data = await fetchUserData(phone);
+                if (data && data.dates && data.dates.includes(utils.todayKey())) {
+                    currentPhone = phone;
+                    currentName = await fetchCustomerName(phone);
+                    await refreshDashboard();
+                    utils.showAlert(alert, 'You already checked in today! Here\'s your progress.', 'success');
+                    utils.screen('dash');
+                    return;
+                }
+                currentPhone = phone;
+                await startScanner(phone);
+            });
+
+            document.getElementById('cancelScanBtn').addEventListener('click', () => {
+                stopScanner();
+                document.getElementById('scannerPanel').classList.remove('show');
+                utils.hideAlert(document.getElementById('phoneAlert'));
+            });
+
+            // Dashboard
+            document.getElementById('dashCheckInBtn').addEventListener('click', () => goToPhoneEntry('checkin'));
+            document.getElementById('dashBackBtn').addEventListener('click', () => utils.screen('landing'));
+
+            // Success
+            document.getElementById('successDashboardBtn').addEventListener('click', async () => {
+                await refreshDashboard();
+                utils.screen('dash');
+            });
+            document.getElementById('successNewCheckinBtn').addEventListener('click', () => goToPhoneEntry('checkin'));
+
+            // Admin
+            document.getElementById('adminLogoutBtn').addEventListener('click', () => utils.screen('landing'));
+            document.getElementById('adminCheckinBtn').addEventListener('click', () => goToPhoneEntry('checkin'));
+
+            document.getElementById('adminSaveBtn').addEventListener('click', async () => {
+                const nmk = utils.nextMonthKey();
+                const newRewards = {};
+                const inputs = document.querySelectorAll('#adminRewardsList .r-name-input');
+                for (const inp of inputs) {
+                    const m = parseInt(inp.dataset.m);
+                    const iconInp = document.querySelector(`.r-icon-input[data-m="${m}"]`);
+                    const visitsInp = document.querySelector(`.r-visits-input[data-m="${m}"]`);
+                    if (visitsInp) {
+                        const newM = parseInt(visitsInp.value);
+                        if (newM && newM > 0) {
+                            newRewards[newM] = { name: inp.value, icon: iconInp ? iconInp.value : '🎮' };
+                        }
+                    } else if (m > 0) {
+                        newRewards[m] = { name: inp.value, icon: iconInp ? iconInp.value : '🎮' };
+                    }
+                }
+                for (const [k, v] of Object.entries(adminRewards)) {
+                    const m = parseInt(k);
+                    if (!newRewards[m] && m > 0) {
+                        const exists = document.querySelector(`.r-name-input[data-m="${m}"]`);
+                        if (!exists) newRewards[m] = v;
+                    }
+                }
+                try {
+                    await saveRewardConfig(nmk, newRewards);
+                    adminRewards = { ...newRewards };
+                    const status = document.getElementById('adminSaveStatus');
+                    status.textContent = '✓ Rewards saved for ' + nmk + '!';
+                    status.classList.add('show');
+                    setTimeout(() => status.classList.remove('show'), 3000);
+                    await loadAdminPortal();
+                } catch (e) { alert('Save failed: ' + e.message); }
+            });
+
+            // Enter key on phone input
+            document.getElementById('phoneInput').addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    const mode = currentMode || 'view';
+                    if (mode === 'view') document.getElementById('phoneViewBtn').click();
+                    else document.getElementById('phoneCheckinBtn').click();
+                }
+            });
+
+            utils.screen('landing');
+            console.log('🎮 Gamers Paradise Loyalty v3 — Enhanced Gaming Experience');
+            console.log('📱 Admin: ' + ADMIN_PHONE);
+        });
+    </script>
 </body>
 </html>
