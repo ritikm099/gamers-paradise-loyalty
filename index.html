@@ -1266,11 +1266,7 @@
                 <h1>Level Up Your Visits</h1>
                 <p>Track your gaming sessions, earn stamps, and unlock epic rewards every month.</p>
             </div>
-            <div class="landing-rewards" id="landingRewards">
-                <div class="landing-reward-tile"><div class="icon">☕</div><div class="visits">3 visits</div><div class="name">Cold Coffee</div></div>
-                <div class="landing-reward-tile"><div class="icon">🍟</div><div class="visits">6 visits</div><div class="name">French Fries</div></div>
-                <div class="landing-reward-tile"><div class="icon">🎮</div><div class="visits">9 visits</div><div class="name">1-Hour Pass</div></div>
-            </div>
+            <div class="landing-rewards" id="landingRewards"></div>
             <div class="landing-cta">
                 <button class="primary-btn" id="viewProgressBtn"><span>📊</span> View My Progress</button>
                 <button class="secondary-btn" id="checkInLandingBtn"><span>📸</span> Check In Today</button>
@@ -1393,11 +1389,11 @@
             <div class="admin-header">
                 <div>
                     <h2>⚙️ Admin Portal</h2>
-                    <small>Manage rewards for <strong id="adminMonthLabel">next month</strong></small>
+                    <small>Manage rewards for <strong id="adminMonthLabel">this month</strong></small>
                 </div>
                 <button class="ghost-btn" id="adminLogoutBtn" style="color:var(--muted);">← Exit</button>
             </div>
-            <p style="color:var(--muted);font-size:12px;margin-bottom:12px;">Edit the rewards that will be active next month. Changes saved to cloud.</p>
+            <p style="color:var(--muted);font-size:12px;margin-bottom:12px;">Edit the rewards that are active this month. Changes saved to cloud.</p>
             <div id="adminRewardsList"></div>
             <div class="admin-actions">
                 <button class="primary-btn" id="adminSaveBtn"><span>💾</span> Save Changes</button>
@@ -1405,7 +1401,7 @@
             </div>
             <div id="adminSaveStatus" class="admin-save-status">✓ Rewards saved successfully!</div>
             <div style="margin-top:14px;padding:12px;background:rgba(251,191,36,0.04);border:1px solid rgba(251,191,36,0.08);border-radius:10px;">
-                <p style="color:var(--muted);font-size:10px;margin:0;text-align:center;">⚡ Only <strong style="color:var(--gold);">8446186106</strong> has admin access.</p>
+                <p style="color:var(--muted);font-size:10px;margin:0;text-align:center;">⚡ Admin access is verified server-side.</p>
             </div>
         </div>
     </div>
@@ -1456,7 +1452,16 @@
             messagingSenderId: "409381337462",
             appId: "1:409381337462:web:017001d388c9352f112257"
         };
-        const ADMIN_PHONE = '8446186106';
+        let ADMIN_PHONE = null;
+        async function fetchAdminPhone() {
+            try {
+                const ref = doc(db, 'reward_configs', 'admin');
+                const snap = await getDoc(ref);
+                if (snap.exists()) {
+                    ADMIN_PHONE = snap.data().phone;
+                }
+            } catch (e) { /* fallback handled in admin check */ }
+        }
         const DEFAULT_REWARDS = {
             3: { name: 'Cold Coffee', icon: '☕' },
             6: { name: 'French Fries', icon: '🍟' },
@@ -1473,8 +1478,6 @@
             15: 'rarity-gold',
             18: 'rarity-gold'
         };
-        const MILESTONES = [3, 6, 9, 12, 15, 18];
-
         // ━━━ STATE ━━━
         let app = null,
             db = null,
@@ -1489,8 +1492,7 @@
         // ━━━ UTILITIES ━━━
         const utils = {
             monthKey: () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`; },
-            nextMonthKey: () => { const d = new Date(); d.setMonth(d.getMonth() + 1); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`; },
-            todayKey: () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; },
+           todayKey: () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; },
             formatDate: (s) => { const [y, m, d] = s.split('-'); return new Date(y, m - 1, d).toLocaleDateString('en-IN', { day: 'numeric',
                     month: 'short' }); },
             showAlert: (el, msg, type = 'error') => { el.textContent = msg; el.className = `alert show alert-${type}`; },
@@ -1611,11 +1613,27 @@
             return { ...DEFAULT_REWARDS };
         }
 
-        async function getNextMonthRewards() {
-            const nmk = utils.nextMonthKey();
-            const config = await getRewardConfig(nmk);
-            if (config && Object.keys(config).length > 0) return config;
-            return { ...DEFAULT_REWARDS };
+        async function renderLandingRewards() {
+            const container = document.getElementById('landingRewards');
+            try {
+                const rewards = await getActiveRewards();
+                const sorted = Object.keys(rewards).map(Number).sort((a, b) => a - b);
+                container.innerHTML = sorted.map(m => `
+                    <div class="landing-reward-tile">
+                        <div class="icon">${rewards[m].icon}</div>
+                        <div class="visits">${m} visit${m > 1 ? 's' : ''}</div>
+                        <div class="name">${rewards[m].name}</div>
+                    </div>
+                `).join('');
+            } catch (e) {
+                container.innerHTML = Object.entries(DEFAULT_REWARDS).map(([k, v]) => `
+                    <div class="landing-reward-tile">
+                        <div class="icon">${v.icon}</div>
+                        <div class="visits">${k} visits</div>
+                        <div class="name">${v.name}</div>
+                    </div>
+                `).join('');
+            }
         }
 
         // ━━━ USER DATA ━━━
@@ -1683,7 +1701,18 @@
             return { success: true, alreadyVisited: false, visits: monthData.visits, claimed: monthData.claimed,
                 dates: monthData.dates, newReward };
         }
-
+         function calcStreak(dates) {
+            if (!dates || dates.length === 0) return 0;
+            const allDates = new Set(dates);
+            let s = 0;
+            let d = new Date();
+            while (true) {
+                const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+                if (allDates.has(key)) { s++;
+                    d.setDate(d.getDate() - 1); } else break;
+            }
+            return s;
+        }
         async function claimReward(phone, milestone) {
             const uid = 'user_' + phone;
             const mk = utils.monthKey();
@@ -1746,11 +1775,12 @@
             }
 
             // XP Bar
-            const pct = Math.min((visits / 18) * 100, 100);
+            const maxVisits = getMaxVisits(rewards);
+            const pct = Math.min((visits / maxVisits) * 100, 100);
             document.getElementById('dashXpFill').style.width = pct + '%';
-            document.getElementById('dashXpLabel').textContent = `${visits} / 18`;
+            document.getElementById('dashXpLabel').textContent = `${visits} / ${maxVisits}`;
             document.getElementById('dashLevel').textContent = Math.floor(visits / 3) + 1;
-            const remain = Math.max(0, 18 - visits);
+            const remain = Math.max(0, maxVisits - visits);
             document.getElementById('dashXpRemain').textContent = remain > 0 ? `${remain} visits to max` : '🏆 MAX LEVEL';
 
             // Journey
@@ -1760,39 +1790,14 @@
             renderRewardCards(visits, claimed, rewards);
 
             // Visit log
-            renderVisitLog(dates);
-
-            // Today status
+            renderVisitLog(dates);            // Today status
             document.querySelector('.today-status')?.remove();
         }
 
-        function calcStreak(dates) {
-            if (!dates || dates.length === 0) return 0;
-            const sorted = [...dates].sort();
-            let streak = 0;
-            const today = utils.todayKey();
-            let check = today;
-            for (let i = sorted.length - 1; i >= 0; i--) {
-                if (sorted[i] === check) { streak++;
-                    check = utils.todayKeyFromDate(new Date(new Date(check).getTime() - 86400000)); } else break;
-            }
-            // fix: handle today's date properly
-            // simpler: count consecutive days ending today
-            const allDates = new Set(dates);
-            let s = 0;
-            let d = new Date();
-            while (true) {
-                const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-                if (allDates.has(key)) { s++;
-                    d.setDate(d.getDate() - 1); } else break;
-            }
-            return s;
+        function getMaxVisits(rewards) {
+            const milestones = Object.keys(rewards || {}).map(Number);
+            return milestones.length > 0 ? Math.max(...milestones) : 18;
         }
-
-        // Helper to get today key from date
-        utils.todayKeyFromDate = function(d) {
-            return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-        };
 
         function getRank(visits) {
             if (visits >= 18) return '👑 Diamond';
@@ -1897,9 +1902,9 @@
                 document.getElementById('dashStreak').textContent = '🔥 0d';
                 document.getElementById('dashRank').textContent = '🏆 Recruit';
                 document.getElementById('dashXpFill').style.width = '0%';
-                document.getElementById('dashXpLabel').textContent = '0 / 18';
-                document.getElementById('dashLevel').textContent = '1';
-                document.getElementById('dashXpRemain').textContent = '18 visits to max';
+                 const defaultMax = getMaxVisits();
+                document.getElementById('dashXpLabel').textContent = `0 / ${defaultMax}`;
+                document.getElementById('dashXpRemain').textContent = `${defaultMax} visits to max`;
                 document.getElementById('dashNextIcon').textContent = '☕';
                 document.getElementById('dashNextName').textContent = 'Cold Coffee';
                 document.getElementById('dashNextRemaining').textContent = '3 visits remaining';
@@ -1915,9 +1920,9 @@
 
         // ━━━ ADMIN ━━━
         async function loadAdminPortal() {
-            const nmk = utils.nextMonthKey();
-            document.getElementById('adminMonthLabel').textContent = nmk;
-            const rewards = await getNextMonthRewards();
+            const mk = utils.monthKey();
+            document.getElementById('adminMonthLabel').textContent = mk;
+            const rewards = await getActiveRewards();
             adminRewards = { ...rewards };
             const list = document.getElementById('adminRewardsList');
             list.innerHTML = '';
@@ -2087,11 +2092,11 @@
                 document.getElementById('successGreeting').textContent = 'Hi ' + name + '!';
                 document.getElementById('successMsg').textContent = `Visit #${result.visits} recorded! 🎮`;
                 document.getElementById('successVisits').textContent = result.visits;
-                const pct = Math.min((result.visits / 18) * 100, 100);
-                document.getElementById('successProgBar').style.width = pct + '%';
-                document.getElementById('successProgressText').textContent = result.visits + ' / 18';
-
-                const rewards = await getActiveRewards();
+                 const rewards = await getActiveRewards();
+                 const successMax = getMaxVisits(rewards);
+                 const pct = Math.min((result.visits / successMax) * 100, 100);
+            document.getElementById('successProgBar').style.width = pct + '%';
+            document.getElementById('successProgressText').textContent = result.visits + ' / ' + successMax;
                 const milestones = Object.keys(rewards).map(Number).sort((a, b) => a - b);
 
                 const rwEl = document.getElementById('rewardUnlocked');
@@ -2156,6 +2161,7 @@
         // ━━━ MAIN ━━━
         window.addEventListener('load', async () => {
             if (!initFirebase()) return;
+            await fetchAdminPhone();
 
             // Terms
             document.getElementById('termsBtn').addEventListener('click', () => document.getElementById('termsModal')
@@ -2237,39 +2243,27 @@
             document.getElementById('adminLogoutBtn').addEventListener('click', () => utils.screen('landing'));
             document.getElementById('adminCheckinBtn').addEventListener('click', () => goToPhoneEntry('checkin'));
 
-            document.getElementById('adminSaveBtn').addEventListener('click', async () => {
-                const nmk = utils.nextMonthKey();
-                const newRewards = {};
-                const inputs = document.querySelectorAll('#adminRewardsList .r-name-input');
-                for (const inp of inputs) {
-                    const m = parseInt(inp.dataset.m);
-                    const iconInp = document.querySelector(`.r-icon-input[data-m="${m}"]`);
-                    const visitsInp = document.querySelector(`.r-visits-input[data-m="${m}"]`);
-                    if (visitsInp) {
-                        const newM = parseInt(visitsInp.value);
-                        if (newM && newM > 0) {
-                            newRewards[newM] = { name: inp.value, icon: iconInp ? iconInp.value : '🎮' };
-                        }
-                    } else if (m > 0) {
-                        newRewards[m] = { name: inp.value, icon: iconInp ? iconInp.value : '🎮' };
-                    }
-                }
-                for (const [k, v] of Object.entries(adminRewards)) {
-                    const m = parseInt(k);
-                    if (!newRewards[m] && m > 0) {
-                        const exists = document.querySelector(`.r-name-input[data-m="${m}"]`);
-                        if (!exists) newRewards[m] = v;
-                    }
-                }
+             document.getElementById('adminSaveBtn').addEventListener('click', async () => {
+                const btn = document.getElementById('adminSaveBtn');
+                const status = document.getElementById('adminSaveStatus');
+                const origText = btn.innerHTML;
+                btn.disabled = true;
+                btn.innerHTML = '<span class="spinner" style="width:18px;height:18px;border-width:2px;display:inline-block;"></span> Saving...';
+                status.classList.remove('show');
                 try {
-                    await saveRewardConfig(nmk, newRewards);
-                    adminRewards = { ...newRewards };
-                    const status = document.getElementById('adminSaveStatus');
-                    status.textContent = '✓ Rewards saved for ' + nmk + '!';
+                    const mk = utils.monthKey();
+                    await saveRewardConfig(mk, adminRewards);
+                    status.textContent = '✓ Rewards saved successfully!';
                     status.classList.add('show');
                     setTimeout(() => status.classList.remove('show'), 3000);
-                    await loadAdminPortal();
-                } catch (e) { alert('Save failed: ' + e.message); }
+                } catch (e) {
+                    status.textContent = '✗ Save failed: ' + e.message;
+                    status.classList.add('show');
+                    setTimeout(() => status.classList.remove('show'), 5000);
+                } finally {
+                    btn.disabled = false;
+                    btn.innerHTML = origText;
+                }
             });
 
             // Enter key on phone input
@@ -2281,9 +2275,9 @@
                 }
             });
 
+            await renderLandingRewards();
             utils.screen('landing');
             console.log('🎮 Gamers Paradise Loyalty v3 — Enhanced Gaming Experience');
-            console.log('📱 Admin: ' + ADMIN_PHONE);
         });
     </script>
 </body>
