@@ -1,0 +1,64 @@
+rules_version = '2';
+
+// ═══════════════════════════════════════════════════════════════
+// GAMERS PARADISE — Firestore security rules
+//
+// ⚠️  THIS IS A TEMPLATE — DO NOT PASTE OVER YOUR LIVE RULES BLINDLY.
+//
+// Firestore denies everything that isn't explicitly allowed, so if
+// you replace your existing rules with only the blocks below, the
+// loyalty app (reward_configs, loyalty_users, gamers_paradise_data)
+// will stop working.
+//
+// Instead: MERGE the `menu_items` / `menu_configs` blocks and the
+// `isAdmin()` helper into your existing rules file, keeping your
+// current blocks for the loyalty collections.
+//
+// Deploy with:   firebase deploy --only firestore:rules
+// Or paste into Firebase Console → Firestore Database → Rules → Publish.
+// ═══════════════════════════════════════════════════════════════
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ─── Digital menu ───
+    // Public read (the menu is shown to any visitor), admin-only write.
+    match /menu_items/{itemId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /menu_configs/{configId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // ─── Admin check ───
+    // Preferred: a Firebase Auth custom claim set server-side (Admin SDK /
+    // Cloud Function). See docs/firebase-setup.md for how to set it.
+    //
+    // If you are not ready to add custom claims, use the temporary
+    // allow-list variant further down instead.
+    function isAdmin() {
+      return request.auth != null && request.auth.token.admin == true;
+    }
+
+    // ─── TEMPORARY admin alternative (uncomment and fill in) ───
+    // Keep the list of admin UIDs in a document, restricted to reads by
+    // signed-in users. Replace isAdmin() calls above with isAdminUid().
+    //
+    // function isAdminUid() {
+    //   return request.auth != null
+    //     && request.auth.uid in get(/databases/$(database)/documents/menu_configs/admins).data.uids;
+    // }
+    //
+    // match /menu_configs/admins {
+    //   allow read: if request.auth != null;
+    //   allow write: if false;   // manage from the Firebase console only
+    // }
+
+    // ─── KEEP YOUR EXISTING BLOCKS BELOW ───
+    // Paste your current rules for reward_configs, loyalty_users and
+    // gamers_paradise_data here so the loyalty app keeps working.
+  }
+}

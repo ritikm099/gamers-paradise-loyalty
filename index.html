@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="Gamers Paradise Loyalty - Level up your visits!" />
     <meta name="theme-color" content="#07070c" />
+    <link rel="icon" href="assets/logo.png" />
+    <link rel="apple-touch-icon" href="assets/logo.png" />
     <title>Gamers Paradise — Loyalty Rewards</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
@@ -1250,12 +1252,14 @@
 
         <!-- ═══ HEADER ═══ -->
         <div class="header-bar">
-            <div class="logo-sm">GP</div>
+            <!-- The logo already contains the wordmark, so no duplicate brand text. -->
+            <img class="logo-sm" src="assets/logo.png" alt="Gamers Paradise"
+                style="object-fit:contain;background:transparent;box-shadow:none;">
             <div class="brand-sm">
-                <h2>Gamers Paradise</h2>
-                <p>Loyalty Program</p>
+                <p style="margin:0;">Loyalty Program</p>
             </div>
             <div class="header-actions">
+                <a class="ghost-btn" href="menu.html" style="text-decoration:none;">🍽️ Menu</a>
                 <button class="ghost-btn" id="termsBtn">Terms</button>
             </div>
         </div>
@@ -1398,11 +1402,23 @@
             <div class="admin-actions">
                 <button class="primary-btn" id="adminSaveBtn"><span>💾</span> Save Changes</button>
                 <button class="secondary-btn" id="adminCheckinBtn"><span>📸</span> Check In</button>
+                <button class="secondary-btn" id="adminMenuBtn"><span>🍽️</span> Menu Manager</button>
             </div>
             <div id="adminSaveStatus" class="admin-save-status">✓ Rewards saved successfully!</div>
             <div style="margin-top:14px;padding:12px;background:rgba(251,191,36,0.04);border:1px solid rgba(251,191,36,0.08);border-radius:10px;">
                 <p style="color:var(--muted);font-size:10px;margin:0;text-align:center;">⚡ Admin access is verified server-side.</p>
             </div>
+        </div>
+        <!-- ═══ MENU MANAGER ═══ -->
+        <div id="menuAdminScreen" class="screen card">
+            <div class="admin-header">
+                <div>
+                    <h2>🍽️ Menu Manager</h2>
+                    <small>Manage the digital menu customers see</small>
+                </div>
+                <button class="ghost-btn" id="menuAdminBackBtn" style="color:var(--muted);">← Back</button>
+            </div>
+            <div id="menuManagerRoot"></div>
         </div>
     </div>
 
@@ -1426,6 +1442,7 @@
     <!-- ═══ SCRIPTS ═══ -->
     <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js">
     </script>
+    <script type="module" src="assets/js/menu-admin.js"></script>
     <script type="module">
         // ━━━ IMPORTS ━━━
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
@@ -2170,6 +2187,8 @@
                 .classList.remove('show'));
             document.getElementById('acceptTerms').addEventListener('click', () => document.getElementById('termsModal')
                 .classList.remove('show'));
+            // Deep link from the digital menu page: index.html#terms
+            if (window.location.hash === '#terms') document.getElementById('termsModal').classList.add('show');
 
             // Landing
             document.getElementById('viewProgressBtn').addEventListener('click', () => goToPhoneEntry('view'));
@@ -2242,6 +2261,15 @@
             // Admin
             document.getElementById('adminLogoutBtn').addEventListener('click', () => utils.screen('landing'));
             document.getElementById('adminCheckinBtn').addEventListener('click', () => goToPhoneEntry('checkin'));
+
+            // Menu Manager
+            document.getElementById('adminMenuBtn').addEventListener('click', async () => {
+                utils.screen('menuAdmin');
+                if (window.MenuAdmin) {
+                    await window.MenuAdmin.init(document.getElementById('menuManagerRoot'));
+                }
+            });
+            document.getElementById('menuAdminBackBtn').addEventListener('click', () => utils.screen('admin'));
 
              document.getElementById('adminSaveBtn').addEventListener('click', async () => {
                 const btn = document.getElementById('adminSaveBtn');

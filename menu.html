@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Gamers Paradise Digital Menu — browse fries, maggi, shakes, coffee and snacks." />
+    <meta name="theme-color" content="#07070c" />
+    <title>Digital Menu — Gamers Paradise</title>
+    <link rel="icon" href="assets/logo.png" />
+    <link rel="apple-touch-icon" href="assets/logo.png" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/theme.css">
+    <link rel="stylesheet" href="assets/css/menu.css">
+</head>
+
+<body class="menu-page">
+
+    <!-- ═══ PARTICLES ═══ -->
+    <canvas id="particles-canvas" aria-hidden="true"></canvas>
+
+    <div class="page-shell">
+
+        <!-- ═══ NAVIGATION ═══ -->
+        <!-- The logo already contains the wordmark, so no brand text here. -->
+        <header class="menu-nav">
+            <a class="nav-brand" href="index.html" aria-label="Gamers Paradise home">
+                <img class="nav-logo" src="assets/logo.png" alt="Gamers Paradise">
+            </a>
+            <nav class="nav-links" aria-label="Main navigation">
+                <a href="index.html" class="nav-loyalty">Loyalty</a>
+                <a href="menu.html" aria-current="page">Menu</a>
+            </nav>
+        </header>
+
+        <!-- ═══ MENU ═══ -->
+        <main id="menuMain">
+
+            <section class="menu-hero">
+                <h1>Digital Menu</h1>
+                <p>Fresh bites, thick shakes and proper coffee — served while you game.</p>
+            </section>
+
+            <div class="menu-toolbar">
+                <div class="menu-search">
+                    <span class="search-icon" aria-hidden="true">🔍</span>
+                    <input id="menuSearchInput" type="text" placeholder="Search dishes…" aria-label="Search the menu"
+                        autocomplete="off">
+                    <button class="clear-search" id="menuSearchClear" aria-label="Clear search">✕</button>
+                </div>
+                <button class="saved-toggle" id="menuSavedToggle" aria-pressed="false">
+                    <span aria-hidden="true">♥</span> Saved
+                </button>
+            </div>
+
+            <div class="menu-tabs" id="menuTabs" role="tablist" aria-label="Menu categories"></div>
+
+            <div class="menu-chips" id="menuChips"></div>
+
+            <p class="menu-count" id="menuResultCount" aria-live="polite"></p>
+
+            <!-- Replaced by JS. If this stays visible, the module never ran:
+                 ES modules do not load over file:// — serve the folder. -->
+            <div id="menuSections">
+                <div class="menu-empty">
+                    <span class="emoji" aria-hidden="true">⏳</span>
+                    <strong>Loading the menu…</strong>
+                    <p>If this stays on screen, open the site over <code>http://</code> (e.g.
+                        <code>python -m http.server</code>) rather than <code>file://</code> — browsers block
+                        JavaScript modules on <code>file://</code>.</p>
+                </div>
+            </div>
+
+            <p class="menu-footnote">
+                Prices in ₹ and inclusive of taxes. Images are representative.<br>
+                Allergen information is indicative — please ask our staff if you have a severe allergy.
+            </p>
+
+        </main>
+    </div>
+
+    <!-- ═══ ITEM DETAIL MODAL ═══ -->
+    <div class="modal-overlay" id="itemModal">
+        <div class="modal" id="itemModalBody" role="dialog" aria-modal="true" aria-label="Menu item details"></div>
+    </div>
+
+    <!-- ═══ SCRIPT ═══ -->
+    <script type="module" src="assets/js/menu.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,348 @@
+/* ═══════════════════════════════════════════════
+   GAMERS PARADISE — SHARED THEME
+   Design tokens + primitives shared by index.html
+   and menu.html. Values mirror index.html's :root
+   block so both pages stay visually identical.
+   ═══════════════════════════════════════════════ */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --bg: #06060b;
+    --surface: #0d0d18;
+    --card-bg: rgba(255, 255, 255, 0.03);
+    --card-border: rgba(255, 255, 255, 0.06);
+    --accent: #a855f7;
+    --accent-glow: rgba(168, 85, 247, 0.25);
+    --cyan: #22d3ee;
+    --gold: #fbbf24;
+    --pink: #ec4899;
+    --text: #f8fafc;
+    --muted: #94a3b8;
+    --radius: 16px;
+    --shadow: 0 8px 40px rgba(0, 0, 0, 0.6);
+    --success: #4ade80;
+    --warn: #fbbf24;
+    --transition: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    --font-display: 'Orbitron', system-ui, sans-serif;
+    --font-body: 'Inter', system-ui, sans-serif;
+}
+
+html,
+body {
+    width: 100%;
+    min-height: 100%;
+    font-family: var(--font-body);
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+    -webkit-text-size-adjust: 100%;
+}
+
+/* ─── Particle background ─── */
+#particles-canvas {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.5;
+}
+
+.page-shell {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 16px 16px 40px;
+    background:
+        radial-gradient(ellipse at 10% 10%, rgba(168, 85, 247, 0.10), transparent 50%),
+        radial-gradient(ellipse at 90% 90%, rgba(34, 211, 238, 0.06), transparent 50%);
+}
+
+/* ─── Scrollbar ─── */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.02);
+}
+::-webkit-scrollbar-thumb {
+    background: var(--accent);
+    border-radius: 6px;
+}
+
+/* ─── Screens (SPA show/hide used inside index.html) ─── */
+.screen {
+    display: none;
+    width: 100%;
+    max-width: 560px;
+    animation: fadeUp 0.5s ease;
+}
+.screen.active {
+    display: block;
+}
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Card ─── */
+.card {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.005));
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 24px 20px;
+    box-shadow: var(--shadow), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    position: relative;
+    overflow: hidden;
+}
+
+/* ─── Buttons ─── */
+.primary-btn {
+    width: 100%;
+    padding: 15px 20px;
+    border-radius: 12px;
+    border: none;
+    background: linear-gradient(135deg, var(--accent), #7c3aed);
+    color: #fff;
+    font-family: inherit;
+    font-weight: 800;
+    font-size: 15px;
+    cursor: pointer;
+    box-shadow: 0 0 30px rgba(168, 85, 247, 0.20), 0 8px 24px rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s, box-shadow 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+.primary-btn:hover:not(:disabled) {
+    transform: translateY(-2px) scale(1.01);
+    box-shadow: 0 0 50px rgba(168, 85, 247, 0.35), 0 12px 32px rgba(0, 0, 0, 0.4);
+}
+.primary-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.secondary-btn {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: var(--text);
+    padding: 10px 18px;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: center;
+}
+.secondary-btn:hover {
+    border-color: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.07);
+}
+
+.ghost-btn {
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    padding: 6px 12px;
+    font-family: inherit;
+    font-size: 12px;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+.ghost-btn:hover {
+    color: var(--text);
+}
+
+/* ─── Inputs ─── */
+input[type="tel"],
+input[type="text"],
+input[type="number"],
+input[type="url"],
+select,
+textarea {
+    width: 100%;
+    padding: 14px 16px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: rgba(0, 0, 0, 0.3);
+    color: var(--text);
+    font-family: inherit;
+    font-size: 16px;
+    transition: border-color 0.25s, box-shadow 0.25s;
+}
+input:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.12);
+}
+input::placeholder,
+textarea::placeholder {
+    color: var(--muted);
+    opacity: 0.5;
+}
+select option {
+    background: var(--surface);
+    color: var(--text);
+}
+
+/* ─── Alerts ─── */
+.alert {
+    padding: 12px 16px;
+    border-radius: 10px;
+    font-size: 13px;
+    margin: 10px 0;
+    display: none;
+}
+.alert.show {
+    display: block;
+    animation: fadeUp 0.3s ease;
+}
+.alert-error { background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.2); color: #f87171; }
+.alert-success { background: rgba(74, 222, 128, 0.10); border: 1px solid rgba(74, 222, 128, 0.15); color: var(--success); }
+.alert-warn { background: rgba(251, 191, 36, 0.10); border: 1px solid rgba(251, 191, 36, 0.15); color: var(--gold); }
+.alert-info { background: rgba(168, 85, 247, 0.10); border: 1px solid rgba(168, 85, 247, 0.15); color: var(--accent); }
+
+/* ─── Header / brand ─── */
+.header-bar {
+    width: 100%;
+    max-width: 980px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding: 0 4px;
+}
+.logo-sm {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--accent), var(--pink));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 20px;
+    color: #fff;
+    flex-shrink: 0;
+    box-shadow: 0 0 30px rgba(168, 85, 247, 0.25);
+}
+.brand-sm h2 {
+    font-size: 17px;
+    margin: 0;
+    font-weight: 800;
+    letter-spacing: -0.2px;
+    background: linear-gradient(135deg, #fff, var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+.brand-sm p {
+    font-size: 10px;
+    color: var(--muted);
+    margin: 1px 0 0;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+/* ─── Modal ─── */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(8px);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+.modal-overlay.show {
+    display: flex;
+}
+.modal {
+    background: var(--surface);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: var(--radius);
+    padding: 24px;
+    max-width: 480px;
+    width: 100%;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow);
+    animation: fadeUp 0.3s ease;
+}
+.modal h3 {
+    margin-bottom: 10px;
+    font-size: 18px;
+}
+.modal-close {
+    float: right;
+    background: none;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 22px;
+    line-height: 1;
+}
+.modal-close:hover {
+    color: var(--text);
+}
+
+/* ─── Spinner ─── */
+.loading-spinner {
+    display: none;
+    position: fixed;
+    inset: 0;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 1100;
+}
+.loading-spinner.show {
+    display: flex;
+}
+.spinner {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 3px solid rgba(255, 255, 255, 0.04);
+    border-top-color: var(--accent);
+    animation: spin 0.9s linear infinite;
+}
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ─── Motion preferences ─── */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+    }
+    #particles-canvas {
+        display: none;
+    }
+}

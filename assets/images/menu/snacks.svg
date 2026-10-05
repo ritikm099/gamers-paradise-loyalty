@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600" role="img" aria-label="Snacks">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#171024"/>
+      <stop offset="1" stop-color="#0d0d18"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="45%" r="60%">
+      <stop offset="0" stop-color="#a855f7" stop-opacity="0.26"/>
+      <stop offset="1" stop-color="#a855f7" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#bg)"/>
+  <rect width="800" height="600" fill="url(#glow)"/>
+  <path d="M320 262 L344 238 L368 262 L392 238 L416 262 L440 238 L464 262 L484 262 L484 278 L316 278 Z" fill="#c084fc"/>
+  <path d="M316 266 L484 266 L498 512 Q400 536 302 512 Z" fill="#a855f7"/>
+  <ellipse cx="400" cy="392" rx="66" ry="38" fill="#f8fafc" opacity="0.92"/>
+  <circle cx="378" cy="392" r="10" fill="#a855f7"/>
+  <circle cx="422" cy="392" r="10" fill="#a855f7"/>
+</svg>

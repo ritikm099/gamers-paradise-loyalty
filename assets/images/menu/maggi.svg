@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600" role="img" aria-label="Maggi noodles">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#20140f"/>
+      <stop offset="1" stop-color="#0d0d18"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="45%" r="60%">
+      <stop offset="0" stop-color="#f97316" stop-opacity="0.26"/>
+      <stop offset="1" stop-color="#f97316" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#bg)"/>
+  <rect width="800" height="600" fill="url(#glow)"/>
+  <path d="M296 292 q40 -32 80 0 t80 0 t80 0" stroke="#fbbf24" stroke-width="16" fill="none" stroke-linecap="round"/>
+  <path d="M296 332 q40 -28 80 0 t80 0 t80 0" stroke="#f59e0b" stroke-width="14" fill="none" stroke-linecap="round"/>
+  <path d="M250 372 A150 150 0 0 0 550 372 Z" fill="#f97316"/>
+  <rect x="238" y="354" width="324" height="28" rx="14" fill="#fb923c"/>
+  <circle cx="356" cy="368" r="11" fill="#4ade80"/>
+  <circle cx="444" cy="368" r="11" fill="#4ade80"/>
+</svg>

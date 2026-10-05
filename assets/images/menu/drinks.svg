@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600" role="img" aria-label="Coffee">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f1a20"/>
+      <stop offset="1" stop-color="#0d0d18"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="45%" r="60%">
+      <stop offset="0" stop-color="#22d3ee" stop-opacity="0.24"/>
+      <stop offset="1" stop-color="#22d3ee" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#bg)"/>
+  <rect width="800" height="600" fill="url(#glow)"/>
+  <path d="M358 226 q-16 -34 0 -62" stroke="#94a3b8" stroke-width="11" fill="none" stroke-linecap="round" opacity="0.7"/>
+  <path d="M442 226 q16 -34 0 -62" stroke="#94a3b8" stroke-width="11" fill="none" stroke-linecap="round" opacity="0.7"/>
+  <path d="M498 320 q62 0 62 52 t-62 52" stroke="#22d3ee" stroke-width="24" fill="none" stroke-linecap="round"/>
+  <rect x="296" y="280" width="208" height="192" rx="26" fill="#22d3ee"/>
+  <ellipse cx="400" cy="286" rx="104" ry="24" fill="#0b1220"/>
+  <ellipse cx="400" cy="492" rx="176" ry="26" fill="#334155"/>
+</svg>
