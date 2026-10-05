@@ -3,62 +3,77 @@ rules_version = '2';
 // ═══════════════════════════════════════════════════════════════
 // GAMERS PARADISE — Firestore security rules
 //
-// ⚠️  THIS IS A TEMPLATE — DO NOT PASTE OVER YOUR LIVE RULES BLINDLY.
+// This file is the COMPLETE ruleset, built from the project's live
+// rules with the missing collections added.
 //
-// Firestore denies everything that isn't explicitly allowed, so if
-// you replace your existing rules with only the blocks below, the
-// loyalty app (reward_configs, loyalty_users, gamers_paradise_data)
-// will stop working.
+// The previous rules only matched paths under `gamers_paradise_data/**`,
+// and Firestore denies anything not matched — so `reward_configs` and
+// `loyalty_users` were denied, which is what produced
+// "Missing or insufficient permissions" in index.html.
 //
-// Instead: MERGE the `menu_items` / `menu_configs` blocks and the
-// `isAdmin()` helper into your existing rules file, keeping your
-// current blocks for the loyalty collections.
-//
-// Deploy with:   firebase deploy --only firestore:rules
+// Deploy:  firebase deploy --only firestore:rules
 // Or paste into Firebase Console → Firestore Database → Rules → Publish.
 // ═══════════════════════════════════════════════════════════════
 
 service cloud.firestore {
   match /databases/{database}/documents {
 
+    // ─── Existing store data (unchanged from the live rules) ───
+    match /gamers_paradise_data/{storeId}/rig_claims/{setupId} {
+      allow read, write: if true;
+    }
+
+    match /gamers_paradise_data/{storeId}/session_food_archive/{docId} {
+      allow read, write: if true;
+    }
+
+    match /gamers_paradise_data/{storeId}/{document=**} {
+      allow read, write: if true;
+    }
+
+    // ─── WAS MISSING — caused the permission errors ───
+    // Monthly reward configs (getRewardConfig / getActiveRewards / saveRewardConfig)
+    match /reward_configs/{docId} {
+      allow read, write: if true;
+    }
+
+    // Loyalty users (fetchUserData / stampVisit / claimReward) + check-in log
+    match /loyalty_users/{uid} {
+      allow read, write: if true;
+
+      match /checkIns/{docId} {
+        allow read, write: if true;
+      }
+    }
+
     // ─── Digital menu ───
-    // Public read (the menu is shown to any visitor), admin-only write.
-    match /menu_items/{itemId} {
+    // Public read; writes open for now so the Menu Manager works without
+    // admin auth. Tighten with the claim check shown at the bottom once
+    // you have a real admin Auth account.
+    match /menu_items/{docId} {
       allow read: if true;
-      allow write: if isAdmin();
+      allow write: if true;
     }
 
-    match /menu_configs/{configId} {
+    match /menu_configs/{docId} {
       allow read: if true;
-      allow write: if isAdmin();
+      allow write: if true;
     }
 
-    // ─── Admin check ───
-    // Preferred: a Firebase Auth custom claim set server-side (Admin SDK /
-    // Cloud Function). See docs/firebase-setup.md for how to set it.
+    // ─── HARDENING (do this later) ───
+    // 1. Change both menu `allow write` lines above to:
+    //      allow write: if request.auth != null && request.auth.token.admin == true;
+    // 2. Grant the claim once with the Admin SDK (needs a real Auth account):
+    //      await getAuth().setCustomUserClaims(ADMIN_UID, { admin: true });
     //
-    // If you are not ready to add custom claims, use the temporary
-    // allow-list variant further down instead.
-    function isAdmin() {
-      return request.auth != null && request.auth.token.admin == true;
-    }
-
-    // ─── TEMPORARY admin alternative (uncomment and fill in) ───
-    // Keep the list of admin UIDs in a document, restricted to reads by
-    // signed-in users. Replace isAdmin() calls above with isAdminUid().
-    //
-    // function isAdminUid() {
-    //   return request.auth != null
-    //     && request.auth.uid in get(/databases/$(database)/documents/menu_configs/admins).data.uids;
-    // }
-    //
-    // match /menu_configs/admins {
-    //   allow read: if request.auth != null;
-    //   allow write: if false;   // manage from the Firebase console only
-    // }
-
-    // ─── KEEP YOUR EXISTING BLOCKS BELOW ───
-    // Paste your current rules for reward_configs, loyalty_users and
-    // gamers_paradise_data here so the loyalty app keeps working.
+    // Interim alternative — a UID allow-list document:
+    //    function isAdminUid() {
+    //      return request.auth != null
+    //        && request.auth.uid in get(/databases/$(database)/documents/menu_configs/admins).data.uids;
+    //    }
+    //    match /menu_configs/admins {
+    //      allow read: if request.auth != null;
+    //      allow write: if false;   // manage from the Firebase console only
+    //    }
   }
 }

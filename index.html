@@ -1596,7 +1596,16 @@
                 app = initializeApp(firebaseConfig);
                 db = getFirestore(app);
                 auth = getAuth(app);
-                signInAnonymously(auth).catch(() => {});
+                // Do NOT swallow this error. If Anonymous auth is disabled in the
+                // Firebase console, this rejects, every Firestore call is then
+                // unauthenticated, and rules deny it with
+                // "Missing or insufficient permissions".
+                signInAnonymously(auth)
+                    .then((cred) => console.info('[loyalty] signed in anonymously', cred.user.uid))
+                    .catch((err) => console.error(
+                        '[loyalty] ANONYMOUS SIGN-IN FAILED — Firestore will be denied. ' +
+                        'Enable Authentication > Sign-in method > Anonymous. ', err && err.code, err && err.message
+                    ));
                 return true;
             } catch (e) { return false; }
         }
