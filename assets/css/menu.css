@@ -17,6 +17,20 @@ body.menu-page .page-shell > * {
     max-width: 100%;
     min-width: 0;
 }
+/* Explicit widths too — a percentage/`stretch` can be defeated by caching or
+   an overridden `align-items`, so pin the main column directly. */
+#menuMain,
+.menu-hero,
+.menu-toolbar,
+.menu-tabs,
+.menu-chips,
+.menu-count,
+#menuSections,
+.menu-footnote {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+}
 
 /* ─── Top navigation ─── */
 .menu-nav {
@@ -24,6 +38,7 @@ body.menu-page .page-shell > * {
     top: 0;
     z-index: 100;
     width: 100%;
+    max-width: 100%;
     display: flex;
     align-items: center;
     gap: 12px;
@@ -43,9 +58,9 @@ body.menu-page .page-shell > * {
     min-width: 0;
 }
 .menu-nav .nav-logo {
-    height: 46px;
+    height: 64px;
     width: auto;
-    max-width: 170px;
+    max-width: 240px;
     object-fit: contain;
     display: block;
 }
@@ -643,7 +658,19 @@ body.menu-page .page-shell > * {
         font-size: 20px;
     }
     .menu-nav .nav-logo {
-        height: 40px;
+        height: 56px;
+        max-width: 190px;
+    }
+    .menu-nav {
+        padding: 8px 0;
+        gap: 8px;
+    }
+    .menu-nav .nav-links {
+        gap: 2px;
+    }
+    .menu-nav .nav-links a {
+        padding: 7px 9px;
+        font-size: 12px;
     }
     .menu-nav .nav-links a {
         padding: 8px 10px;

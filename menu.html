@@ -12,8 +12,8 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Inter:wght@400;500;600;700;800;900&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/theme.css">
-    <link rel="stylesheet" href="assets/css/menu.css">
+    <link rel="stylesheet" href="assets/css/theme.css?v=2">
+    <link rel="stylesheet" href="assets/css/menu.css?v=2">
 </head>
 
 <body class="menu-page">
@@ -39,19 +39,19 @@
         <main id="menuMain">
 
             <section class="menu-hero">
-                <h1>Digital Menu</h1>
-                <p>Fresh bites, thick shakes and proper coffee — served while you game.</p>
+                <h1>Pick Your Power-Up</h1>
+                <p>Fries, shakes and caffeine drops. Eat, game, respawn.</p>
             </section>
 
             <div class="menu-toolbar">
                 <div class="menu-search">
                     <span class="search-icon" aria-hidden="true">🔍</span>
-                    <input id="menuSearchInput" type="text" placeholder="Search dishes…" aria-label="Search the menu"
+                    <input id="menuSearchInput" type="text" placeholder="Search the loot…" aria-label="Search the menu"
                         autocomplete="off">
                     <button class="clear-search" id="menuSearchClear" aria-label="Clear search">✕</button>
                 </div>
-                <button class="saved-toggle" id="menuSavedToggle" aria-pressed="false">
-                    <span aria-hidden="true">♥</span> Saved
+                <button class="saved-toggle" id="menuSavedToggle" aria-pressed="false" aria-label="Show only saved items">
+                    <span aria-hidden="true">♥</span> Loot
                 </button>
             </div>
 
@@ -66,7 +66,7 @@
             <div id="menuSections">
                 <div class="menu-empty">
                     <span class="emoji" aria-hidden="true">⏳</span>
-                    <strong>Loading the menu…</strong>
+                    <strong>Summoning the menu…</strong>
                     <p>If this stays on screen, open the site over <code>http://</code> (e.g.
                         <code>python -m http.server</code>) rather than <code>file://</code> — browsers block
                         JavaScript modules on <code>file://</code>.</p>
@@ -74,8 +74,7 @@
             </div>
 
             <p class="menu-footnote">
-                Prices in ₹ and inclusive of taxes. Images are representative.<br>
-                Allergen information is indicative — please ask our staff if you have a severe allergy.
+                Allergen info is indicative — flag any serious allergy to our staff before you order.
             </p>
 
         </main>
@@ -87,7 +86,7 @@
     </div>
 
     <!-- ═══ SCRIPT ═══ -->
-    <script type="module" src="assets/js/menu.js"></script>
+    <script type="module" src="assets/js/menu.js?v=2"></script>
 
 </body>
 

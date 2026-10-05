@@ -232,9 +232,9 @@ select option {
     padding: 0 4px;
 }
 .logo-sm {
-    width: 44px;
-    height: 44px;
-    border-radius: 12px;
+    width: 64px;
+    height: 64px;
+    border-radius: 14px;
     background: linear-gradient(135deg, var(--accent), var(--pink));
     display: flex;
     align-items: center;

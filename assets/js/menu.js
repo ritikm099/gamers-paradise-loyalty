@@ -155,8 +155,8 @@ function renderSections(visible) {
         root.innerHTML = `
             <div class="menu-empty">
                 <span class="emoji" aria-hidden="true">🔍</span>
-                <strong>No dishes match</strong>
-                <p>Try a different search or clear your filters.</p>
+                <strong>No loot found</strong>
+                <p>That search came up dry, gamer. Clear a filter and try again.</p>
                 <button class="secondary-btn" id="menuResetFilters" style="margin-top:14px;">Clear filters</button>
             </div>`;
         const reset = document.getElementById('menuResetFilters');
@@ -189,8 +189,8 @@ function render() {
     const countEl = document.getElementById('menuResultCount');
     if (countEl) {
         countEl.textContent = visible.length === state.items.length
-            ? `${state.items.length} items`
-            : `${visible.length} of ${state.items.length} items`;
+            ? `${state.items.length} items on deck`
+            : `${visible.length} / ${state.items.length} drops found`;
     }
 }
 
@@ -220,7 +220,7 @@ function openItem(id) {
             </div>
             <div class="item-detail__cat">${escapeHtml(categoryName(item.category))}</div>
             <h3 class="item-detail__title">${escapeHtml(item.name)}</h3>
-            <p class="item-detail__desc">${escapeHtml(item.description || 'No description yet.')}</p>
+            <p class="item-detail__desc">${escapeHtml(item.description || 'No lore for this one yet.')}</p>
             <div class="item-detail__tags">
                 ${tagPills(item.tags) || '<span class="tag-pill">No dietary info</span>'}
             </div>

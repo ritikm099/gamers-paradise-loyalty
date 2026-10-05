@@ -74,24 +74,24 @@ export const DEFAULT_CATEGORIES = [
 // The live 14-item menu. Rendered when Firestore is empty or unreachable.
 export const DEFAULT_MENU = [
     // Fries
-    { id: 'salted-fries', name: 'Salted Fries', description: 'Classic crispy fries with a light salt seasoning.', price: 100, category: 'fries', imageUrl: '', tags: ['veg'], sortOrder: 10, available: true, featured: false },
-    { id: 'peri-peri-fries', name: 'Peri Peri Fries', description: 'Crispy fries tossed in a punchy peri peri spice mix.', price: 120, category: 'fries', imageUrl: '', tags: ['veg', 'spicy'], sortOrder: 20, available: true, featured: false },
-    { id: 'peri-peri-cheese-fries', name: 'Peri Peri Cheese Fries', description: 'Loaded fries with melted cheese and peri peri heat.', price: 130, category: 'fries', imageUrl: '', tags: ['veg', 'spicy', 'contains-dairy'], sortOrder: 30, available: true, featured: true },
+    { id: 'salted-fries', name: 'Salted Fries', description: 'Classic crispy fries with a light salt seasoning.', price: 100, category: 'fries', imageUrl: 'assets/images/menu/salted-fries.jpg', tags: ['veg'], sortOrder: 10, available: true, featured: false },
+    { id: 'peri-peri-fries', name: 'Peri Peri Fries', description: 'Crispy fries tossed in a punchy peri peri spice mix.', price: 120, category: 'fries', imageUrl: 'assets/images/menu/peri-peri-fries.jpg', tags: ['veg', 'spicy'], sortOrder: 20, available: true, featured: false },
+    { id: 'peri-peri-cheese-fries', name: 'Peri Peri Cheese Fries', description: 'Loaded fries with melted cheese and peri peri heat.', price: 130, category: 'fries', imageUrl: 'assets/images/menu/peri-peri-cheese-fries.jpg', tags: ['veg', 'spicy', 'contains-dairy'], sortOrder: 30, available: true, featured: true },
     // Maggi
-    { id: 'plain-maggi', name: 'Plain Maggi', description: 'The comforting classic, simply cooked and served hot.', price: 60, category: 'maggi', imageUrl: '', tags: ['veg'], sortOrder: 10, available: true, featured: false },
-    { id: 'veg-masala-maggi', name: 'Veg Masala Maggi', description: 'Masala noodles with fresh garden vegetables.', price: 100, category: 'maggi', imageUrl: '', tags: ['veg'], sortOrder: 20, available: true, featured: false },
-    { id: 'peri-masala-cheese-maggi', name: 'Peri Masala Cheese Maggi', description: 'Spicy peri masala noodles finished with molten cheese.', price: 130, category: 'maggi', imageUrl: '', tags: ['veg', 'spicy', 'contains-dairy'], sortOrder: 30, available: true, featured: false },
+    { id: 'plain-maggi', name: 'Plain Maggi', description: 'The comforting classic, simply cooked and served hot.', price: 60, category: 'maggi', imageUrl: 'assets/images/menu/plain-maggi.jpg', tags: ['veg'], sortOrder: 10, available: true, featured: false },
+    { id: 'veg-masala-maggi', name: 'Veg Masala Maggi', description: 'Masala noodles with fresh garden vegetables.', price: 100, category: 'maggi', imageUrl: 'assets/images/menu/veg-masala-maggi.jpg', tags: ['veg'], sortOrder: 20, available: true, featured: false },
+    { id: 'peri-masala-cheese-maggi', name: 'Peri Masala Cheese Maggi', description: 'Spicy peri masala noodles finished with molten cheese.', price: 130, category: 'maggi', imageUrl: 'assets/images/menu/peri-masala-cheese-maggi.jpg', tags: ['veg', 'spicy', 'contains-dairy'], sortOrder: 30, available: true, featured: false },
     // Shakes
-    { id: 'oreo-thick-shake', name: 'Oreo Thick Shake', description: 'Thick blended shake loaded with crushed Oreo cookies.', price: 100, category: 'shakes', imageUrl: '', tags: ['veg', 'contains-dairy'], sortOrder: 10, available: true, featured: false },
-    { id: 'kitkat-shake', name: 'Kitkat Shake', description: 'Creamy chocolate shake with crunchy KitKat pieces.', price: 120, category: 'shakes', imageUrl: '', tags: ['veg', 'contains-dairy'], sortOrder: 20, available: true, featured: false },
-    { id: 'biscoff-thick-shake', name: 'Biscoff Thick Shake', description: 'Caramelised Biscoff blended into a rich thick shake.', price: 130, category: 'shakes', imageUrl: '', tags: ['veg', 'contains-dairy'], sortOrder: 30, available: true, featured: true },
+    { id: 'oreo-thick-shake', name: 'Oreo Thick Shake', description: 'Thick blended shake loaded with crushed Oreo cookies.', price: 100, category: 'shakes', imageUrl: 'assets/images/menu/oreo-thick-shake.jpg', tags: ['veg', 'contains-dairy'], sortOrder: 10, available: true, featured: false },
+    { id: 'kitkat-shake', name: 'Kitkat Shake', description: 'Creamy chocolate shake with crunchy KitKat pieces.', price: 120, category: 'shakes', imageUrl: 'assets/images/menu/kitkat-shake.jpg', tags: ['veg', 'contains-dairy'], sortOrder: 20, available: true, featured: false },
+    { id: 'biscoff-thick-shake', name: 'Biscoff Thick Shake', description: 'Caramelised Biscoff blended into a rich thick shake.', price: 130, category: 'shakes', imageUrl: 'assets/images/menu/biscoff-thick-shake.jpg', tags: ['veg', 'contains-dairy'], sortOrder: 30, available: true, featured: true },
     // Coffee & Drinks
-    { id: 'hot-coffee', name: 'Hot Coffee', description: 'Freshly brewed hot coffee, served strong and warm.', price: 60, category: 'drinks', imageUrl: '', tags: ['veg', 'contains-dairy', 'caffeine'], sortOrder: 10, available: true, featured: false },
-    { id: 'cold-coffee', name: 'Cold Coffee', description: 'Chilled iced brew with cream — the house favourite.', price: 100, category: 'drinks', imageUrl: '', tags: ['veg', 'contains-dairy', 'caffeine'], sortOrder: 20, available: true, featured: true },
-    { id: 'water', name: 'Water', description: 'Chilled packaged drinking water.', price: 10, category: 'drinks', imageUrl: '', tags: ['vegan'], sortOrder: 30, available: true, featured: false },
-    { id: 'diet-coke', name: 'Diet Coke', description: 'Sugar-free cola, served ice cold.', price: 60, category: 'drinks', imageUrl: '', tags: ['vegan', 'caffeine'], sortOrder: 40, available: true, featured: false },
+    { id: 'hot-coffee', name: 'Hot Coffee', description: 'Freshly brewed hot coffee, served strong and warm.', price: 60, category: 'drinks', imageUrl: 'assets/images/menu/hot-coffee.jpg', tags: ['veg', 'contains-dairy', 'caffeine'], sortOrder: 10, available: true, featured: false },
+    { id: 'cold-coffee', name: 'Cold Coffee', description: 'Chilled iced brew with cream — the house favourite.', price: 100, category: 'drinks', imageUrl: 'assets/images/menu/cold-coffee.jpg', tags: ['veg', 'contains-dairy', 'caffeine'], sortOrder: 20, available: true, featured: true },
+    { id: 'water', name: 'Water', description: 'Chilled packaged drinking water.', price: 10, category: 'drinks', imageUrl: 'assets/images/menu/water.jpg', tags: ['vegan'], sortOrder: 30, available: true, featured: false },
+    { id: 'diet-coke', name: 'Diet Coke', description: 'Sugar-free cola, served ice cold.', price: 60, category: 'drinks', imageUrl: 'assets/images/menu/diet-coke.jpg', tags: ['vegan', 'caffeine'], sortOrder: 40, available: true, featured: false },
     // Snacks & Extras
-    { id: 'cyob-chips-bag', name: 'CYOB Chips Bag', description: 'Build your own bag of chips and pick your flavours.', price: 80, category: 'snacks', imageUrl: '', tags: ['veg'], sortOrder: 10, available: true, featured: false }
+    { id: 'cyob-chips-bag', name: 'CYOB Chips Bag', description: 'Build your own bag of chips and pick your flavours.', price: 80, category: 'snacks', imageUrl: 'assets/images/menu/cyob-chips-bag.jpg', tags: ['veg'], sortOrder: 10, available: true, featured: false }
 ];
 
 /** Fallback image path for a category (bundled, always available). */
